@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+﻿{% extends "layout.html" %}
 
 {% block content %}
 
@@ -8,7 +8,7 @@
     <p><a href="http://flask.pocoo.org/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
 </div>
 
-<div class="row">
+<!--<div class="row">
     <div class="col-md-4">
         <h2>Getting started</h2>
         <p>
@@ -28,6 +28,123 @@
         <p>You can easily publish to Microsoft Azure using Visual Studio. Find out how you can host your application using a free trial today.</p>
         <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
     </div>
-</div>
+</div>-->
+
+<input type="file" name="name" value="" style="display:none;"/>
+<input type="button" name="name" value="导入文件" />
+
+<script>
+    window.onload = function () {
+    var input = lt_code.getAll5("input")[0];
+        var button = lt_code.getAll5("input")[1];
+        var fileReader = new FileReader();
+        var md5s = [];
+        const size = 10 * 1024 * 1024;
+
+        var url = /\/\/([^\/]*)/.exec(window.location.href);
+
+        //const socket = new WebSocket("ws://" + url[1] + "/connect");
+        const socket = io();
+        window.socket = socket;
+        socket.binaryType = "arraybuffer";
+        //socket.onopen = function () {
+        //    console.log("连接已经建立!");
+        //}
+        //socket.onmessage = function (e) {
+        //    console.log(e.data);
+        //}
+        //socket.onerror = function (e) {
+        //    console.log(e);
+        //}
+        //socket.onclose = function (e) {
+        //    console.error('websocket 断开');
+        //    //console.log(e);
+        //    console.log(e.code + ' ' + e.reason + ' ' + e.wasClean);
+        //}
+        socket.on("connect", function (e) {
+            console.log(e);
+        });
+        socket.on("disconnect", function (e) {
+            console.log(e);
+        });
+        
+
+        button.onmousedown = function () {
+            input.click();
+            fileReader.onprogress = function (e) {
+                console.log(e.loaded);
+            }
+            input.onchange = function () {
+                var file = input.files[0];
+                fileReader.readAsArrayBuffer(file);
+                fileReader.onload = function () {
+                    console.log("文件读取完成!");
+                    for (var i = 0; i < fileReader.result.length; i += size) {
+                        console.log(index / fileReader.result.length);
+                        var part = fileReader.result.slice(index, index + size);
+                        md5s.push(md5(part));
+                        socket.send(part);
+                    }
+                }
+            }
+        }
+
+        var upPart = function (str, md5, isPart) {
+            //启动会话
+            $(function () {
+                /**上传数据 */
+                var up = {
+                    uid: window.UID,
+                    type: isPart,
+                    part: str,
+                    md5: md5,
+                };
+                up = {
+                    n: "testUp",
+                    data: lt_code.base64.encode(JSON.stringify(up)),
+                };
+
+                $.ajax({
+                    type: "post",
+                    url: "/api/",
+                    data: JSON.stringify(up),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        console.log(data);
+                        switch (data) {
+                            case "Error:NAME":
+                            case "Error:UID":
+                            case "Error:NOTSIGN":
+                                window.location.href = "/sign/";
+                                //console.trace("先禁止返回注册");
+                                break;
+                            case "False":
+                            case "Error:NOTFOUND":
+                                alert("此设备不存在!");
+                                break;
+                            case "Error:NO":
+                                alert("未知错误!");
+                                break;
+                            case "Error:EMPTY":
+                                alert("没有任何数据!");
+                                break;
+                            case "True":
+                                codeBox.classList.add("codeBoxShow");
+                                break;
+                            default:
+                                alert("未知错误!");
+                                break;
+                        }
+                    },
+                    error: function (err) {
+                        alert(err);
+                    }
+                });
+            });
+        }
+    }
+
+</script>
 
 {% endblock %}

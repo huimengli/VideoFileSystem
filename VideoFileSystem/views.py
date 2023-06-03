@@ -3,8 +3,10 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template
-from VideoFileSystem import app
+from flask import render_template,request
+from VideoFileSystem import app,socketio
+
+year = '2021';
 
 @app.route('/')
 @app.route('/home')
@@ -35,3 +37,65 @@ def about():
         year=datetime.now().year,
         message='Your application description page.'
     )
+
+@socketio.on('connect')
+def handle_connect():
+    print('WebSocket connected')
+    #return "null";
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('WebSocket disconnected')
+    #return "null";
+
+@app.route('/api')
+@app.route('/API')
+@app.route('/Api')
+#@socketio.on('api')
+def api():
+    '''
+    API接口
+    '''
+    gets = request.args;
+    values = request.get_data();
+    ip = "";
+    try:
+        ip = request.headers["X-Forwarded-For"];
+    except Exception:
+        ip = None;
+
+
+    if len(values)>0:
+        try:
+            value = json.loads(values);
+            if value['n']=="testUp":
+                pass
+
+        except Exception as e:
+            raise e;
+            print("错误内容:"+str(e));
+            print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
+            print("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
+            print(values);
+            return values;
+
+    elif len(gets)>0:
+        try:
+            value = json.loads(gets);
+            if value['n']=="testUp":
+                pass
+
+        except Exception as e:
+            raise e;
+            print("错误内容:"+str(e));
+            print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
+            print("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
+            print(values);
+            return values;
+
+    else:
+        return render_template(
+            "502.html",
+            title='错误界面',
+            year=year
+        );

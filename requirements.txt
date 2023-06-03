@@ -1,1 +1,16 @@
-Flask<1
+bidict==0.21.4
+click==8.0.4
+colorama==0.4.5
+Flask==0.12.5
+Flask-SocketIO==5.3.4
+importlib-metadata==4.8.3
+itsdangerous==2.0.1
+Jinja2==3.0.3
+MarkupSafe==2.0.1
+pip==10.0.1
+python-engineio==4.4.1
+python-socketio==5.8.0
+setuptools==39.0.1
+typing-extensions==4.1.1
+Werkzeug==0.16.1
+zipp==3.6.0

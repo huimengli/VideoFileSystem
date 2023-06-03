@@ -18,6 +18,8 @@
     <Name>VideoFileSystem</Name>
     <RootNamespace>VideoFileSystem</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
+    <Environment>GEVENT_SUPPORT=True</Environment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +39,50 @@
     <Folder Include="VideoFileSystem\static\" />
     <Folder Include="VideoFileSystem\static\content\" />
     <Folder Include="VideoFileSystem\static\fonts\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\info\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\logs\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\heads\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\remotes\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\remotes\origin\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\objects\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\objects\4a\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\objects\86\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\objects\9a\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\objects\info\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\objects\pack\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\refs\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\refs\heads\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\refs\remotes\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\refs\remotes\origin\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\refs\tags\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_3\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_3\css\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_3\js\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_5\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_5\css\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_5\js\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_6\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_6\css\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_6\js\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_7\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_7\css\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_7\js\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\encode\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\images\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\item\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\json\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\min\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\min\item\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\sVersion\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\testPage\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\tsOut\" />
+    <Folder Include="VideoFileSystem\static\JavaScriptCode\ts\" />
+    <Folder Include="VideoFileSystem\static\js\" />
     <Folder Include="VideoFileSystem\static\scripts\" />
     <Folder Include="VideoFileSystem\templates\" />
   </ItemGroup>
@@ -49,6 +95,96 @@
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.gitignore" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\config" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\description" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\FETCH_HEAD" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\HEAD" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\applypatch-msg.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\commit-msg.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\fsmonitor-watchman.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\post-update.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\pre-applypatch.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\pre-commit.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\pre-merge-commit.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\pre-push.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\pre-rebase.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\pre-receive.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\prepare-commit-msg.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\push-to-checkout.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\update.sample" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\index" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\info\exclude" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\logs\HEAD" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\heads\master" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\remotes\origin\HEAD" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\remotes\origin\master" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\logs\refs\remotes\origin\show" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\4a\4b476c8fd14b582b7e17e9806d3b27c9f15e32" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\86\ab56af2e4aab146f8bc2f1337d63aa0dfa9099" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\9a\5927c28375dd46a08ef9bd5ba54e4d3ced2646" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\pack\pack-006f892f9432f40ef2ec37b5dbf0c365d4a73bbe.idx" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\pack\pack-006f892f9432f40ef2ec37b5dbf0c365d4a73bbe.pack" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\pack\pack-0968fbfbb25edd320330d5dc07f460365b1d8fda.idx" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\objects\pack\pack-0968fbfbb25edd320330d5dc07f460365b1d8fda.pack" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\ORIG_HEAD" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\packed-refs" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\refs\heads\master" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\refs\remotes\origin\HEAD" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\refs\remotes\origin\master" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\.git\refs\remotes\origin\show" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\cmd.bat" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\cmdAdmin.bat" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_10.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_11.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_12.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_13.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_14.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_15.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_3\css\action.css" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_3\js\lt_code.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_5\css\action.css" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_5\js\lt_code.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_6\css\action.css" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_6\js\lt_code.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_7\css\action.css" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_7\js\lt_code.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\dist\lt_code_9.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\encode\lt_code.16.min.en.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\encode\lt_code.16.min.en2.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\images\headPortrait.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\item\API.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\item\APIT.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\item\imageOperation.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\item\pseudoThreeD.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\item\threeD.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\item\waterMark.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\json\dataExamples.json" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\lt_code.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\min\item\API.min.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\min\lt_code_14.min.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\min\lt_code_16.min.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\sVersion\lt_code_s11.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\sVersion\lt_code_s14.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\sVersion\lt_code_s16.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\testPage\ImageConvolutionProcessing.html" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\testPage\ImageEncodeAndDecode.html" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\testPage\ltCodeMinJs.html" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\testPage\PseudoThreeD.html" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\testPage\TestAPI.html" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\testPage\WaterMark.html" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\tsOut\Ass.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\tsOut\IDEObject.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\tsOut\SHA256.js" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\ts\Ass.ts" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\ts\IDEObject.ts" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\ts\SHA256.ts" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\将tsOut打包.bat" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\文件合并.bat" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\比较文件.bat" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\编译ts_es5.bat" />
+    <Content Include="VideoFileSystem\static\JavaScriptCode\编译ts_es6.bat" />
+    <Content Include="VideoFileSystem\static\js\item.js" />
     <Content Include="VideoFileSystem\static\scripts\bootstrap.js" />
     <Content Include="VideoFileSystem\static\scripts\bootstrap.min.js" />
     <Content Include="VideoFileSystem\static\scripts\jquery-1.10.2.intellisense.js" />
@@ -63,7 +199,10 @@
     <Content Include="VideoFileSystem\static\scripts\modernizr-2.6.2.js" />
     <Content Include="VideoFileSystem\static\scripts\respond.js" />
     <Content Include="VideoFileSystem\static\scripts\respond.min.js" />
+    <Content Include="VideoFileSystem\static\scripts\socket.io.js" />
+    <Content Include="VideoFileSystem\static\scripts\socket.io.js.map" />
     <Content Include="VideoFileSystem\static\scripts\_references.js" />
+    <Content Include="VideoFileSystem\templates\502.html" />
     <Content Include="VideoFileSystem\templates\about.html" />
     <Content Include="VideoFileSystem\templates\contact.html" />
     <Content Include="VideoFileSystem\templates\index.html" />
@@ -72,8 +211,8 @@
   <ItemGroup>
     <Interpreter Include="env\">
       <Id>env</Id>
-      <Version>0.0</Version>
-      <Description>env (Python 3.10 (64-bit))</Description>
+      <Version>3.6</Version>
+      <Description>env (Python 3.6 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>

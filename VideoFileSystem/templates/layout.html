@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -7,6 +7,10 @@
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
     <script src="/static/scripts/modernizr-2.6.2.js"></script>
+    <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <script>window.UID = lt_code.cookie.getCookie("uid") || function () { var uid = lt_code.variable.newUID(lt_code.variable.browserInfo); lt_code.cookie.saveCookie("uid", uid, 7); return uid; }();</script>
+    <script src="../static/js/item.js"></script>
+    <script src="../static/scripts/socket.io.js"></script>
 </head>
 
 <body>
