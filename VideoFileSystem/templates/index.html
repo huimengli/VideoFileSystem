@@ -35,7 +35,7 @@
 
 <script>
     window.onload = function () {
-    var input = lt_code.getAll5("input")[0];
+        var input = lt_code.getAll5("input")[0];
         var button = lt_code.getAll5("input")[1];
         var fileReader = new FileReader();
         var md5s = [];
@@ -44,30 +44,19 @@
         var url = /\/\/([^\/]*)/.exec(window.location.href);
 
         //const socket = new WebSocket("ws://" + url[1] + "/connect");
-        const socket = io();
+        const socket = io("ws://" + url[1] + "/");
         window.socket = socket;
         socket.binaryType = "arraybuffer";
-        //socket.onopen = function () {
-        //    console.log("连接已经建立!");
-        //}
-        //socket.onmessage = function (e) {
-        //    console.log(e.data);
-        //}
-        //socket.onerror = function (e) {
-        //    console.log(e);
-        //}
-        //socket.onclose = function (e) {
-        //    console.error('websocket 断开');
-        //    //console.log(e);
-        //    console.log(e.code + ' ' + e.reason + ' ' + e.wasClean);
-        //}
-        socket.on("connect", function (e) {
-            console.log(e);
+        socket.on("connect", function () {
+            console.log("服务器连接成功!");
         });
-        socket.on("disconnect", function (e) {
-            console.log(e);
+        socket.on("disconnect", function () {
+            console.log("已经断开连接!");
         });
-        
+        socket.on("message", function (e) {
+            console.log("服务器消息:" + e);
+        })
+
 
         button.onmousedown = function () {
             input.click();
@@ -78,12 +67,19 @@
                 var file = input.files[0];
                 fileReader.readAsArrayBuffer(file);
                 fileReader.onload = function () {
+                    const fileMD5 = md5(this.result);
                     console.log("文件读取完成!");
-                    for (var i = 0; i < fileReader.result.length; i += size) {
-                        console.log(index / fileReader.result.length);
-                        var part = fileReader.result.slice(index, index + size);
-                        md5s.push(md5(part));
-                        socket.send(part);
+                    if (confirm("是否上传文件?")) {
+                        socket.emit("testUp", {
+                            n: "newFile",
+                            md5: fileMD5,
+                        });
+                        //for (var i = 0; i < fileReader.result.length; i += size) {
+                        //    console.log(index / fileReader.result.length);
+                        //    var part = fileReader.result.slice(index, index + size);
+                        //    md5s.push(md5(part));
+                        //    socket.send(part);
+                        //}
                     }
                 }
             }

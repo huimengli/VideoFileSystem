@@ -40,13 +40,21 @@ def about():
 
 @socketio.on('connect')
 def handle_connect():
-    print('WebSocket connected')
+    print('服务器连接成功!')
+    socketio.send("服务器连接成功!");
     #return "null";
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    print('WebSocket disconnected')
+    print('服务器断开连接')
     #return "null";
+
+@socketio.on("testUp")
+def testUp(args):
+    '''
+    测试用socket传输文件
+    '''
+    print(args);
 
 @app.route('/api')
 @app.route('/API')
