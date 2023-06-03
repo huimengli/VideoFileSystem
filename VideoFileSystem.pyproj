@@ -31,11 +31,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="runserver.py" />
+    <Compile Include="VideoFileSystem\fileSystem.py" />
+    <Compile Include="VideoFileSystem\PythonCode\item.py" />
+    <Compile Include="VideoFileSystem\PythonCode\MySqlLink.py" />
+    <Compile Include="VideoFileSystem\PythonCode\record.py" />
+    <Compile Include="VideoFileSystem\PythonCode\RSA.py" />
+    <Compile Include="VideoFileSystem\PythonCode\SendEmail.py" />
+    <Compile Include="VideoFileSystem\PythonCode\zlibTool.py" />
+    <Compile Include="VideoFileSystem\PythonCode\__init__.py" />
     <Compile Include="VideoFileSystem\__init__.py" />
     <Compile Include="VideoFileSystem\views.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="VideoFileSystem\" />
+    <Folder Include="VideoFileSystem\PythonCode\" />
     <Folder Include="VideoFileSystem\static\" />
     <Folder Include="VideoFileSystem\static\content\" />
     <Folder Include="VideoFileSystem\static\fonts\" />
@@ -88,6 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+    <Content Include="VideoFileSystem\PythonCode\.gitignore" />
+    <Content Include="VideoFileSystem\PythonCode\关闭only_full_group_by.bat" />
     <Content Include="VideoFileSystem\static\content\bootstrap.css" />
     <Content Include="VideoFileSystem\static\content\bootstrap.min.css" />
     <Content Include="VideoFileSystem\static\content\site.css" />
