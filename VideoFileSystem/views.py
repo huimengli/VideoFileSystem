@@ -5,6 +5,8 @@ Routes and views for the flask application.
 from datetime import datetime
 from flask import render_template,request
 from VideoFileSystem import app,socketio
+import json;
+from VideoFileSystem.fileSystem import files,fileSystem;
 
 year = '2021';
 
@@ -55,6 +57,12 @@ def testUp(args):
     测试用socket传输文件
     '''
     print(args);
+    args = json.loads(args);
+    if args['n']=="newFile":
+        '''
+        创建新文件
+        '''
+        
 
 @app.route('/api')
 @app.route('/API')

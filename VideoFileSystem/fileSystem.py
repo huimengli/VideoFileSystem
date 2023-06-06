@@ -5,82 +5,11 @@
 import sys
 import json
 import os;
-import VideoFileSystem.PythonCode.MySqlLink as Link;
+#import Flask1.mySqlLink as Link;
+#import VideoFileSystem.PythonCode.MySqlLink as Link;
+#import Flask1.zlibTool as zTool;
 import VideoFileSystem.PythonCode.zlibTool as zTool;
 import hashlib;
-
-def fuc():
-    '''
-    废弃
-    '''
-    #def fileInFolder(filepath):
-    #    '''
-    #    遍历指定目录，显示目录下的所有文件名
-    #    '''
-    #    pathDir =  os.listdir(filepath)  # 获取filepath文件夹下的所有的文件
-    #    files = []
-    #    for allDir in pathDir:
-    #        child = os.path.join('%s\\%s' % (filepath, allDir))
-    #        files.append(child.decode('gbk'))  # .decode('gbk')是解决中文显示乱码问题
-    #        # print child
-    #        # if os.path.isdir(child):
-    #        #     print child
-    #        #     simplepath = os.path.split(child)
-    #        #     print simplepath
-    #    return files
-    
-    #def getfilelist(filepath):
-    #    '''
-    #    遍历文件夹及其子文件夹的所有文件，获取文件的列表
-    #    '''
-    #    filelist =  os.listdir(filepath)  # 获取filepath文件夹下的所有的文件
-    #    files = []
-    #    for i in range(len(filelist)):
-    #        child = os.path.join('%s\\%s' % (filepath, filelist[i]))
-    #        if os.path.isdir(child):
-    #            files.extend(getfilelist(child))
-    #        else:
-    #            files.append(child)
-    #    return files
-    
-    #def getfilelist(filepath, tabnum=1):
-    #    '''
-    #    遍历子文件和所有子文件夹 输出字符串
-    #    '''
-    #    simplepath = os.path.split(filepath)[1]
-    #    returnstr = simplepath+"目录<>"+"\n"
-    #    returndirstr = ""
-    #    returnfilestr = ""
-    #    filelist = os.listdir(filepath)
-    #    for num in range(len(filelist)):
-    #        filename=filelist[num]
-    #        if os.path.isdir(filepath+"/"+filename):
-    #            returndirstr += "\t"*tabnum+getfilelist(filepath+"/"+filename, tabnum+1)
-    #        else:
-    #            returnfilestr += "\t"*tabnum+filename+"\n"
-    #    returnstr += returnfilestr+returndirstr
-    #    return returnstr+"\t"*tabnum+"</>\n"
-     
-    #def filesRename(filepath):
-    #    '''
-    #    批量改名
-    #    '''
-    #    filelist =  os.listdir(filepath)  # 获取filepath文件夹下的所有的文件
-    #    files = []
-    #    for i in range(len(filelist)):
-    #        child = os.path.join('%s\\%s' % (filepath, filelist[i]))
-    #        if os.path.isdir(child):
-    #            continue
-    #        else:
-    #            newName = os.path.join('%s\\%s' % (filepath, str(i) + "_" + filelist[i]))
-    #            print( newName)
-    #            os.rename(child, newName)
-    
-    return 0;
-
-#修改数据库指向,重新连接数据库
-Link.DATANAME = "videofilesystem";
-Link.init();
 
 def stringToMd5(string):
     '''
@@ -104,17 +33,18 @@ class files(object):
 
     tableName = "files";
 
-    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create,uptime,delete):
+    def __init__(self,id,name,size,md5,path,tsPath,userid,level,create,uptime,delete):
         '''
         初始化
         '''
         self.id = id;
         self.name = name;
         self.size = size;
-        self.eachSize = eachSize;
-        self.package = package;
+        #self.eachSize = eachSize;
+        #self.package = package;
         self.md5 = md5;
         self.path = path;
+        self.tsPath = tsPath;
         self.userid = userid;
         self.level = level;
         self.create = create;
@@ -169,10 +99,9 @@ class files(object):
             "id":self.id,
             "name":self.name,
             "size":self.size,
-            "eachSize":self.eachSize,
-            "package":self.package,
             "md5":self.md5,
             "path":self.path[len(fileSystem.root):],
+            "tsPath":self.tsPath[len(fileSystem.root):],
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
@@ -190,10 +119,9 @@ class files(object):
             "id":self.id,
             "name":self.name,
             "size":self.size,
-            "eachSize":self.eachSize,
-            "package":self.package,
             "md5":self.md5,
             "path":self.path,
+            "tsPath":self.tsPath,
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
@@ -265,25 +193,25 @@ class files(object):
                 ret.append(json.dumps(x));
         return ret;
 
-    def upSql(self,tableName):
-        '''
-        上传文件数据到数据库
-        '''
-        if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==tuple:
-            return "Alive";
-        listName = Link.getColumns(tableName);
-        return str(Link.addValue(tableName,listName,self.toList()));
+    #def upSql(self,tableName):
+    #    '''
+    #    上传文件数据到数据库
+    #    '''
+    #    if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==tuple:
+    #        return "Alive";
+    #    listName = Link.getColumns(tableName);
+    #    return str(Link.addValue(tableName,listName,self.toList()));
 
-    def sqlDelete(self,tableName):
-        '''
-        仅删除数据库数据(表层不显示)
-        '''
-        if self.delete==0 or self.delete=="0":
-            self.delete="1";
-            if type(Link.getTable("files",["md5"],"`md5`='"+self.md5+"'"))==tuple:
-                return str(Link.changeValue(tableName,"delete",self.delete,"id",self.id));
+    #def sqlDelete(self,tableName):
+    #    '''
+    #    仅删除数据库数据(表层不显示)
+    #    '''
+    #    if self.delete==0 or self.delete=="0":
+    #        self.delete="1";
+    #        if type(Link.getTable("files",["md5"],"`md5`='"+self.md5+"'"))==tuple:
+    #            return str(Link.changeValue(tableName,"delete",self.delete,"id",self.id));
 
-        return "False";
+    #    return "False";
 
     def trueDelete(self,tableName):
         '''
@@ -349,7 +277,8 @@ class fileSystem(object):
             if x.path==filename:
                 return x;
 
-        return files(-1,"empty",0,"0",1,"","",-1,1,0,1);
+        #return files(-1,"empty",0,"0",1,"","",-1,1,0,1);
+        return files(-1,"empty",0,"0","","",-1,1,0,1,1);
 
     @staticmethod
     def getAllFiles(dirpath):
@@ -463,7 +392,8 @@ class fileSystem(object):
         ret = [];
         if not type(all)==bool and len(all)>0:
             for x in all:
-                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10],x[11]));
+                #ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10],x[11]));
+                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10]));
 
         return ret;
 
