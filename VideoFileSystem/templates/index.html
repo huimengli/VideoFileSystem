@@ -34,12 +34,15 @@
 <input type="button" name="name" value="导入文件" />
 
 <script>
+    /**最大错误次数 */
+    const MaxErrorTimes = 5;
+    /**每次最大传输内容大小 */
+    const size = 1 * 1024 * 1024;
     window.onload = function () {
         var input = lt_code.getAll5("input")[0];
         var button = lt_code.getAll5("input")[1];
-        var fileReader = new FileReader();
+        window.fileReader = new FileReader();
         var md5s = [];
-        const size = 10 * 1024 * 1024;
 
         var url = /\/\/([^\/]*)/.exec(window.location.href);
 
@@ -57,6 +60,8 @@
             console.log("服务器消息:" + e);
         })
 
+        /**错误次数 */
+        var errorTime = {};
 
         button.onmousedown = function () {
             input.click();
@@ -65,80 +70,151 @@
             }
             input.onchange = function () {
                 var file = input.files[0];
+                lt_code.file = file;
                 fileReader.readAsArrayBuffer(file);
                 fileReader.onload = function () {
                     const fileMD5 = md5(this.result);
                     console.log("文件读取完成!");
                     if (confirm("是否上传文件?")) {
-                        socket.emit("testUp", {
-                            n: "newFile",
-                            md5: fileMD5,
-                        });
-                        //for (var i = 0; i < fileReader.result.length; i += size) {
-                        //    console.log(index / fileReader.result.length);
-                        //    var part = fileReader.result.slice(index, index + size);
-                        //    md5s.push(md5(part));
-                        //    socket.send(part);
+                        /**新建文件 */
+                        var newFile = function () {
+                            var up = {
+                                n: "newFile",
+                                md5: fileMD5,
+                                name: file.name,
+                                uptime: file.lastModified,
+                                size: file.size,
+                            };
+                            socket.emit("testUp", JSON.stringify(up));
+                        };
+                        /**
+                         * 上传部分
+                         * @param i
+                         */
+                        var upPart = function (i) {
+                            var part = fileReader.result.slice(i, i + size);
+                            var partValue = {
+                                n: "upFile",
+                                md5: md5(part),
+                                value: new Uint8ClampedArray(part).join(","),
+                                index: i,
+                                size: part.length,
+                            };
+                            //console.log(partValue);
+                            console.log(JSON.stringify(partValue));
+                            socket.emit("testUp", JSON.stringify(partValue));
+                        }
+                        //while (i < fileReader.result.length) {
+                        //    upPart(i);
+                        //    socket.on("")
                         //}
+                        socket.on("upFile", function (e) {
+                            if (e == "newFile") {
+                                /**上传文件指针 */
+                                var i = 0;
+                                /**上传文件块指针 */
+                                var index = 0;
+                                //上传第一部分
+                                upPart(i);
+                                socket.on("upFileError", function (e) {
+                                    console.log(e);
+                                    if (e == "fileNotInit") {
+                                        if (errorTime[e] == undefined || errorTime < MaxErrorTimes) {
+                                            errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
+                                            newFile();
+                                        } else {
+                                            console.error("在服务器上创建文件失败!\n已经超过了最大重试次数!");
+                                            errorTime[e] = 0;
+                                            return;
+                                        }
+                                    } else if (e == "outIndex") {
+
+                                    } else if (e == "success") {
+                                        i += size;
+                                        index += 1;
+                                        upPart(i);
+                                    }
+                                });
+                            }
+                        });
+
+                        //外部测试用
+                        window.newFile = newFile;
+                        window.upPart = upPart;
+
+                        //开始上传文件
+                        newFile();
                     }
                 }
             }
         }
 
-        var upPart = function (str, md5, isPart) {
-            //启动会话
-            $(function () {
-                /**上传数据 */
-                var up = {
-                    uid: window.UID,
-                    type: isPart,
-                    part: str,
-                    md5: md5,
-                };
-                up = {
-                    n: "testUp",
-                    data: lt_code.base64.encode(JSON.stringify(up)),
-                };
+        //测试直接发送文件(结果出来了,socket似乎是不支持大数据传输)
+        //button.onmousedown = function () {
+        //    input.click();
+        //    input.onchange = function () {
+        //        var file = input.files[0];
+        //        fileReader.onload = function () {
+        //            var bytes = new Uint8Array(this.result);
+        //            socket.emit("testUp2", bytes);
+        //        }
+        //        fileReader.readAsArrayBuffer(file);
+        //    }
+        //}
+        //var upPart = function (str, md5, isPart) {
+        //    //启动会话
+        //    $(function () {
+        //        /**上传数据 */
+        //        var up = {
+        //            uid: window.UID,
+        //            type: isPart,
+        //            part: str,
+        //            md5: md5,
+        //        };
+        //        up = {
+        //            n: "testUp",
+        //            data: lt_code.base64.encode(JSON.stringify(up)),
+        //        };
 
-                $.ajax({
-                    type: "post",
-                    url: "/api/",
-                    data: JSON.stringify(up),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "text",
-                    success: function (data) {
-                        console.log(data);
-                        switch (data) {
-                            case "Error:NAME":
-                            case "Error:UID":
-                            case "Error:NOTSIGN":
-                                window.location.href = "/sign/";
-                                //console.trace("先禁止返回注册");
-                                break;
-                            case "False":
-                            case "Error:NOTFOUND":
-                                alert("此设备不存在!");
-                                break;
-                            case "Error:NO":
-                                alert("未知错误!");
-                                break;
-                            case "Error:EMPTY":
-                                alert("没有任何数据!");
-                                break;
-                            case "True":
-                                codeBox.classList.add("codeBoxShow");
-                                break;
-                            default:
-                                alert("未知错误!");
-                                break;
-                        }
-                    },
-                    error: function (err) {
-                        alert(err);
-                    }
-                });
-            });
-        }
+        //        $.ajax({
+        //            type: "post",
+        //            url: "/api/",
+        //            data: JSON.stringify(up),
+        //            contentType: "application/json; charset=utf-8",
+        //            dataType: "text",
+        //            success: function (data) {
+        //                console.log(data);
+        //                switch (data) {
+        //                    case "Error:NAME":
+        //                    case "Error:UID":
+        //                    case "Error:NOTSIGN":
+        //                        window.location.href = "/sign/";
+        //                        //console.trace("先禁止返回注册");
+        //                        break;
+        //                    case "False":
+        //                    case "Error:NOTFOUND":
+        //                        alert("此设备不存在!");
+        //                        break;
+        //                    case "Error:NO":
+        //                        alert("未知错误!");
+        //                        break;
+        //                    case "Error:EMPTY":
+        //                        alert("没有任何数据!");
+        //                        break;
+        //                    case "True":
+        //                        codeBox.classList.add("codeBoxShow");
+        //                        break;
+        //                    default:
+        //                        alert("未知错误!");
+        //                        break;
+        //                }
+        //            },
+        //            error: function (err) {
+        //                alert(err);
+        //            }
+        //        });
+        //    });
+        //}
     }
 
 </script>

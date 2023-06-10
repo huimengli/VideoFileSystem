@@ -7,6 +7,11 @@ from flask import render_template,request
 from VideoFileSystem import app,socketio
 import json;
 from VideoFileSystem.fileSystem import files,fileSystem;
+import hashlib;
+
+testUpFile = files(-1,"test.file",0,"","","",-1,0,0,0,0);
+testUpFileIndex = 0;
+testUpFileMd5 = "";
 
 year = '2021';
 
@@ -58,11 +63,66 @@ def testUp(args):
     '''
     print(args);
     args = json.loads(args);
+    #使用全局变量
+    global testUpFile;
+    global testUpFileIndex;
+    global testUpFileMd5;
     if args['n']=="newFile":
         '''
         创建新文件
         '''
+        testUpFile.name = args['name'];
+        testUpFile.md5 = args['md5'];
+        testUpFile.uptime = args['uptime'];
+        testUpFile.size = args['size'];
+        testUpFile.create = args['uptime'];
+        testUpFile.path = args['name'];
         
+        #重置内容
+        testUpFileIndex = 0;
+        testUpFileMd5 = "";
+
+        #成功
+        socketio.emit("upFile","newFile");
+
+        #创建文件
+        with open(testUpFile.path,"w") as f:
+            pass
+
+    elif args['n']=="upFile":
+        '''
+        写入内容
+        '''
+        if testUpFile.name=="":
+            socketio.emit("upFileError","fileNotInit");
+            return;
+        part = args['value'];
+        md5 = args['md5'];
+        size = args['size'];
+        testMd5 = hashlib.md5(part);
+        index = args['index'];
+        if testMd5==md5:
+            if testUpFileIndex-index==-1:
+                with open(testUpFile.path,"a") as f:
+                    f.write(part);
+                    testUpFileIndex+=1;
+                    socketio.emit("upFileError","success");
+            else:
+                socketio.emit("upFileError","outIndex",testUpFileIndex);
+        else:
+            socketio.emit("upFileError","errorMd5");
+
+    return;
+
+@socketio.on("testUp2")
+def testUp2(args):
+    '''
+    测试直接发送文件
+    '''
+    #print(args);
+    with open("test.file","wb") as f:
+        f.write(args);
+
 
 @app.route('/api')
 @app.route('/API')

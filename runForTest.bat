@@ -13,6 +13,6 @@ explorer http://localhost:5555
 
 :loop
 ::Æô¶¯ÍøÒ³·þÎñÆ÷:
-%~dp0env3\Scripts\python.exe %~dp0runserver.py
+%~dp0env\Scripts\python.exe %~dp0runserver.py
 
 goto loop
