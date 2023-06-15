@@ -1,0 +1,119 @@
+.progressBar {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    background-color: rgba(0,0,0,0.3)
+}
+
+.progressBarTitle {
+    margin: 40vh auto;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.progressBarBox{
+    width:400px;
+    height:20px;
+    border:1px solid black;
+    box-shadow:0 0 0 5px #999;
+    position:relative;
+    margin:5vh auto;
+    margin-bottom:0px;
+    background-color:white;
+}
+
+.progressBarValueBox {
+    width: 0px;
+    height: 18px;
+    background-color: #59ff00;
+}
+
+.progressBarValue {
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    float: left;
+    text-align: center;
+}
+
+.progressBarButtonBox {
+    margin: 5vh auto;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progressBar button{
+    width:150px;
+    height:40px;
+    float:left;
+}
+
+.wait{
+    color:#999;
+    cursor:wait;
+}
+
+div.downFilesBox {
+    border: 1px solid;
+    width: calc(70vw + 2px);
+    margin: 0px auto;
+}
+
+div.eachFile {
+    /*width: 70vw;*/
+    height: 50px;
+    overflow: hidden;
+    box-shadow: inset 0px 0px 5px snow;
+    background-color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid snow;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-around;
+}
+
+div.eachFile:nth-child(2n+1){
+    background-color:#ddd;
+}
+
+div.eachFile:nth-child(2n){
+    background-color:#eee;
+}
+
+/*div.eachFile:first-child {
+    border-top: 1px solid snow;
+}*/
+
+div.eachFile > div {
+    /*float:left;*/
+    margin: auto;
+    height: 25px;
+    line-height: 25px;
+    width: calc(70vw / 4);
+    text-align: center;
+    border-right: 1px solid snow;
+}
+
+div.eachFile > div:last-child {
+    border-right: none;
+}
+
+div.eachFile > div.eachFileBottom > div.eachFileBottomBottom {
+    width: 33%;
+    height: 30px;
+    border: 1px solid snow;
+    /*margin: -3px auto;*/
+    margin-top: -3px;
+    border-radius: 6px;
+    line-height: 30px;
+    /* text-align: center; */
+    float: left;
+    /* margin: auto; */
+    margin-left: calc( ( 100% - 66% ) / 3);
+}
+
+div.eachFile > div.eachFileBottom > div.eachFileBottomBottom:hover {
+    cursor: pointer;
+}

@@ -8,12 +8,32 @@ from VideoFileSystem import app,socketio
 import json;
 from VideoFileSystem.fileSystem import files,fileSystem;
 import hashlib;
+import base64;
+import os;
+import os.path;
+from VideoFileSystem.PythonCode import item;
 
 testUpFile = files(-1,"test.file",0,"","","",-1,0,0,0,0);
 testUpFileIndex = 0;
 testUpFileMd5 = "";
 
+videoPath = "./VideoFileSystem/static/Videos/";         #视频存储路径
+videoAddPath = "/static/Videos/";                       #视频存储路径(追加)
+tsPath = "./VideoFileSystem/static/VideosTS/";          #TS文件路径
+tsAddPath = "/static/VideosTS/";                        #TS文件路径(追加)
+addictionEndName = ".update";                           #更新文件后缀名
+
 year = '2021';
+
+def getFiles(dirPath:str):
+    '''
+    获取文件夹中的所有文件
+    '''
+    ret = [];
+    for fileName in os.listdir(dirPath):
+        ret.append(fileName);
+    return ret;
+
 
 @app.route('/')
 @app.route('/home')
@@ -61,7 +81,9 @@ def testUp(args):
     '''
     测试用socket传输文件
     '''
-    print(args);
+    if len(args)<100:
+        print("\n");
+        item.Trace(args);
     args = json.loads(args);
     #使用全局变量
     global testUpFile;
@@ -76,7 +98,7 @@ def testUp(args):
         testUpFile.uptime = args['uptime'];
         testUpFile.size = args['size'];
         testUpFile.create = args['uptime'];
-        testUpFile.path = args['name'];
+        testUpFile.path = videoPath + args['name'];
         
         #重置内容
         testUpFileIndex = 0;
@@ -87,7 +109,9 @@ def testUp(args):
 
         #创建文件
         with open(testUpFile.path,"w") as f:
-            pass
+            #创建分块验证文件
+            with open(testUpFile.path+addictionEndName,"w") as uf:
+                pass
 
     elif args['n']=="upFile":
         '''
@@ -98,19 +122,34 @@ def testUp(args):
             return;
         part = args['value'];
         md5 = args['md5'];
-        size = args['size'];
-        testMd5 = hashlib.md5(part);
+        size = args['length'];
+        testMd5 = hashlib.md5(part.encode()).hexdigest();
+        part = base64.b64decode(part);
         index = args['index'];
         if testMd5==md5:
-            if testUpFileIndex-index==-1:
-                with open(testUpFile.path,"a") as f:
+            if testUpFileIndex-index==0:
+                with open(testUpFile.path,"ab") as f:
                     f.write(part);
                     testUpFileIndex+=1;
+                    with open(testUpFile.path+addictionEndName,"a") as uf:
+                        uf.write(str(index));
+                        uf.write(":");
+                        uf.write(md5);
+                        uf.write("\n");
+                    if md5=='d41d8cd98f00b204e9800998ecf8427e':
+                        os.remove(testUpFile.path+addictionEndName);
                     socketio.emit("upFileError","success");
             else:
-                socketio.emit("upFileError","outIndex",testUpFileIndex);
+                #socketio.emit("upFileError","outIndex",testUpFileIndex);
+                socketio.emit("upFileError",{"outIndex":testUpFileIndex});
         else:
             socketio.emit("upFileError","errorMd5");
+
+    elif args['n']=="cancal":
+        '''
+        取消上传
+        '''
+        pass
 
     return;
 
@@ -122,7 +161,34 @@ def testUp2(args):
     #print(args);
     with open("test.file","wb") as f:
         f.write(args);
+    return;
 
+@socketio.on("getDownFiles")
+def getDownFiles(args):
+    '''
+    获取下载的文件列表
+    '''
+    files = getFiles(videoPath);
+    rets = [];
+    for x in files:
+        try:
+            files.index(x+addictionEndName)
+        except ValueError:
+            rPath = videoAddPath+x;
+            file = videoPath+x;
+            #size = os.path.getsize(file);
+            fileSt = os.stat(file);
+            create = fileSt.st_ctime;
+            size = fileSt.st_size;
+            ret = {
+                "path":rPath,
+                "name":x,
+                "create":create,
+                "size":size,
+            }
+            rets.append(ret);
+            
+    socketio.emit("downFiles",json.dumps(rets));
 
 @app.route('/api')
 @app.route('/API')

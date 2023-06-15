@@ -92,6 +92,7 @@
     <Folder Include="VideoFileSystem\static\JavaScriptCode\tsOut\" />
     <Folder Include="VideoFileSystem\static\JavaScriptCode\ts\" />
     <Folder Include="VideoFileSystem\static\js\" />
+    <Folder Include="VideoFileSystem\static\css\" />
     <Folder Include="VideoFileSystem\static\scripts\" />
     <Folder Include="VideoFileSystem\templates\" />
   </ItemGroup>
@@ -102,6 +103,7 @@
     <Content Include="VideoFileSystem\static\content\bootstrap.css" />
     <Content Include="VideoFileSystem\static\content\bootstrap.min.css" />
     <Content Include="VideoFileSystem\static\content\site.css" />
+    <Content Include="VideoFileSystem\static\css\index.css" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.ttf" />
@@ -216,6 +218,7 @@
     <Content Include="VideoFileSystem\templates\502.html" />
     <Content Include="VideoFileSystem\templates\about.html" />
     <Content Include="VideoFileSystem\templates\contact.html" />
+    <Content Include="VideoFileSystem\templates\index-back1.html" />
     <Content Include="VideoFileSystem\templates\index.html" />
     <Content Include="VideoFileSystem\templates\layout.html" />
   </ItemGroup>
