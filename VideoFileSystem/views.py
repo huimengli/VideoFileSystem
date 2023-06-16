@@ -41,8 +41,8 @@ def home():
     """Renders the home page."""
     return render_template(
         'index.html',
-        title='Home Page',
-        year=datetime.now().year,
+        title='主页',
+        year=year,
     )
 
 @app.route('/contact')
@@ -51,7 +51,7 @@ def contact():
     return render_template(
         'contact.html',
         title='Contact',
-        year=datetime.now().year,
+        year=year,
         message='Your contact page.'
     )
 
@@ -61,9 +61,20 @@ def about():
     return render_template(
         'about.html',
         title='About',
-        year=datetime.now().year,
+        year=year,
         message='Your application description page.'
     )
+
+@app.route('/login')
+def login():
+    '''
+    登录界面
+    '''
+    return render_template(
+        'login.html',
+        title='登录界面',
+        year=year
+    );
 
 @socketio.on('connect')
 def handle_connect():

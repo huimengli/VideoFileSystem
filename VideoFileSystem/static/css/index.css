@@ -1,3 +1,17 @@
+.upBox {
+    width: calc(100% + 2px);
+    margin: 0 auto;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+}
+
+.upBox > input[type=button] {
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid;
+}
+
 .progressBar {
     width: 100vw;
     height: 100vh;
@@ -58,7 +72,7 @@
 
 div.downFilesBox {
     border: 1px solid;
-    width: calc(70vw + 2px);
+    width: calc(100% + 2px);
     margin: 0px auto;
 }
 
@@ -94,6 +108,10 @@ div.eachFile > div {
     width: calc(70vw / 4);
     text-align: center;
     border-right: 1px solid snow;
+}
+
+div.eachFile>div:first-child{
+    width:47.5vw;
 }
 
 div.eachFile > div:last-child {

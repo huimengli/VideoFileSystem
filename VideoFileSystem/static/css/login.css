@@ -1,0 +1,143 @@
+*{
+    border:0;
+    margin:0;
+    padding:0;
+}
+
+body
+{
+}
+
+.logo {
+    height: 120px;
+    /* max-width: 100%; */
+    position: relative;
+    background: #459FFF;
+}
+
+.logo img {
+    max-height: 110px;
+    display: block;
+    /* max-width: 100%;*/
+}
+
+img.xiaoxun {
+    padding-top: 30px;
+    margin-right: 2%;
+    float: right;
+    width: 500px;
+}
+
+
+.logoBox {
+    background: url(/static/images/login/bodybg.png) no-repeat center;
+    background-size: cover;
+    position: relative;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    /*overflow: hidden;*/
+    height: calc(100vh - 300px);
+}
+
+.loginBox {
+    width: 350px;
+    height: 300px;
+    /* display: flex; */
+    flex-direction: row-reverse;
+    float: right;
+    position: relative;
+    top: 20%;
+    background-color: white;
+    /* margin-right: 99px; */
+    right: 15%;
+    padding:10px;
+}
+
+.loginBoxTitle > .value {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: #459fff;
+    padding: 13px;
+}
+
+
+
+/*------底部信息------*/
+.botcon {
+    width: 100%;
+    height: 180px;
+    text-align: center;
+    position: fixed;
+    bottom: 0px;
+    background: #fff;
+}
+
+.botcon .login-notice {
+    padding-top: 10px;
+    color: #337ab7;
+    overflow: hidden;
+}
+
+.botcon .login-notice .left-notice, .botcon .login-notice .middle-notice, .botcon .login-notice .right-notice {
+    float: left;
+    height: 120px;
+    text-align: left;
+}
+
+.botcon .login-notice .noticecom {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.botcon .left-notice .noticecom {
+    width: 80%;
+    float: right;
+}
+
+.botcon .login-notice h3 {
+    height: 37px;
+    line-height: 37px;
+    color: #4e4e4e;
+    text-indent: 2.2em;
+    margin-bottom: 3px;
+    font-weight: bold;
+}
+
+.botcon .login-notice .left-notice h3 {
+    background: url(/static/images/login/ico01.png) no-repeat left center;
+}
+
+.botcon .login-notice .middle-notice h3 {
+    background: url(/static/images/login/ico02.png) no-repeat left center;
+}
+
+.botcon .login-notice .right-notice h3 {
+    background: url(/static/images/login/ico03.png) no-repeat left center;
+}
+
+.botcon .login-notice .noticecom p, .login-notice .noticecom p a { /* line-height:200%; */
+    color: #525352;
+    font-size: 15px;
+}
+
+.botcon .login-notice .noticecom p a {
+    padding: 0 5px;
+}
+
+/*=版权=*/
+.botcon .login-footer {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    background: #459FFF;
+}
+
+.botcon .login-footer p {
+    color: #fff;
+    line-height: 200%;
+    font-size: 14px;
+    padding-top: 10px;
+}

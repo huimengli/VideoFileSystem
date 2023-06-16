@@ -48,6 +48,7 @@
     <Folder Include="VideoFileSystem\static\" />
     <Folder Include="VideoFileSystem\static\content\" />
     <Folder Include="VideoFileSystem\static\fonts\" />
+    <Folder Include="VideoFileSystem\static\images\login\" />
     <Folder Include="VideoFileSystem\static\JavaScriptCode\" />
     <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\" />
     <Folder Include="VideoFileSystem\static\JavaScriptCode\.git\hooks\" />
@@ -93,6 +94,7 @@
     <Folder Include="VideoFileSystem\static\JavaScriptCode\ts\" />
     <Folder Include="VideoFileSystem\static\js\" />
     <Folder Include="VideoFileSystem\static\css\" />
+    <Folder Include="VideoFileSystem\static\images\" />
     <Folder Include="VideoFileSystem\static\scripts\" />
     <Folder Include="VideoFileSystem\templates\" />
   </ItemGroup>
@@ -103,11 +105,19 @@
     <Content Include="VideoFileSystem\static\content\bootstrap.css" />
     <Content Include="VideoFileSystem\static\content\bootstrap.min.css" />
     <Content Include="VideoFileSystem\static\content\site.css" />
+    <Content Include="VideoFileSystem\static\css\all.css" />
     <Content Include="VideoFileSystem\static\css\index.css" />
+    <Content Include="VideoFileSystem\static\css\login.css" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="VideoFileSystem\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="VideoFileSystem\static\images\login\bodybg.png" />
+    <Content Include="VideoFileSystem\static\images\login\ico01.png" />
+    <Content Include="VideoFileSystem\static\images\login\ico02.png" />
+    <Content Include="VideoFileSystem\static\images\login\ico03.png" />
+    <Content Include="VideoFileSystem\static\images\login\logo.png" />
+    <Content Include="VideoFileSystem\static\images\login\xiaoxun.png" />
     <Content Include="VideoFileSystem\static\JavaScriptCode\.gitignore" />
     <Content Include="VideoFileSystem\static\JavaScriptCode\.git\config" />
     <Content Include="VideoFileSystem\static\JavaScriptCode\.git\description" />
@@ -221,6 +231,7 @@
     <Content Include="VideoFileSystem\templates\index-back1.html" />
     <Content Include="VideoFileSystem\templates\index.html" />
     <Content Include="VideoFileSystem\templates\layout.html" />
+    <Content Include="VideoFileSystem\templates\login.html" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">

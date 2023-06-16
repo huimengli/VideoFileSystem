@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>登录页面</title>
+    <link href="../static/content/bootstrap.min.css" rel="stylesheet" />
+    <link href="../static/css/login.css" rel="stylesheet" />
+    <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <style>
+        .loginEachBox {
+        }
+
+        .loginEachBox > .eachBox {
+            overflow: hidden;
+        }
+
+        .loginEachBox > .eachBox > .line {
+            height: 50px;
+            float: left;
+            width:100%
+        }
+
+        .loginEachBox > .eachBox > .line:nth-child(3) {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .loginEachBox>.eachBox>.line:nth-child(3)>span{
+            color:#999;
+        }
+        
+        .loginEachBox>.eachBox>.line:nth-child(3)>span>input{
+            color:#999;
+        }
+
+        .loginEachBox > .eachBox > .line > * {
+            float: left;
+            padding: 15px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .loginEachBox>.eachBox>.line>img{
+        }
+
+        .loginEachBox>.eachBox>.line>.inputBox{
+            border-bottom:1px solid #999;
+        }
+
+        input[type=text],input[type=password]{
+            outline:none;
+        }
+
+        .line input[type=password]{
+            width:230px;
+        }
+
+        .line > button {
+            width: 300px;
+            background-color: #459fff;
+            color: white;
+            border-radius: 5px;
+            /* margin: 0 auto; */
+            /* align-items: center; */
+            position: relative;
+            left: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 logo1">
+            <img src="/static/images/login/logo.png">
+        </div>
+        <img class="xiaoxun" src="/static/images/login/xiaoxun.png">
+    </div>
+    <div class="logoBox">
+        <div class="loginBox">
+            <div class="loginBoxTitle">
+                <div class="value">
+                    统一身份认证
+                </div>
+            </div>
+            <div class="loginEachBox">
+                <div class="eachBox">
+                    <div class="line">
+                        <img src="/static/images/login/user.png" alt="" />
+                        <div class="inputBox">
+                            <input type="text" name="user" value="" placeholder="请输入账号"/>
+                            <a href="https://rzht.zjsru.edu.cn/im/securitycenter/findUser/index.zf">账号查询</a>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <img src="/static/images/login/psw.png" alt="" />
+                        <div class="inputBox">
+                            <input type="password" name="password" value="" placeholder="请输入密码"/>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <span>
+                            <input type="checkbox" name="remember" value="" />
+                            记住我
+                        </span>
+                        <a href="https://rzht.zjsru.edu.cn/im/securitycenter/findPwd/index.zf">忘记登录密码?</a>
+                    </div>
+                    <div class="line">
+                        <button onclick="window.location.href='{{url_for("home")}}'">登录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="botcon">
+        <div class="login-notice">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3  left-notice">
+                <div class="noticecom">
+                    <h3 style="padding-left:10px;">推荐链接</h3>
+                    <p style="padding-left:35px;"><a href="http://www.zjsru.edu.cn/" target="_blank">树人主页</a>|<a href="http://zs.zjsru.edu.cn/" target="_blank">招生</a>|<a href="https://zjsru.jysd.com/" target="_blank">就业</a>|<a href="https://vpn.zjsru.edu.cn/" target="_blank">VPN</a></p>
+                </div>
+            </div>
+
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 middle-notice">
+                <div class="noticecom" style="width:95%;">
+                    <h3>服务热线</h3>
+                    <p style="padding-left:24px;"><span style="font-size:14px;">拱宸桥校区：87821 （15867107507）；杨汛桥校区：657507（15867107507）；</span></p>
+                    <p style="padding-left:24px;padding-top:5px;">工作日07:50–12:00、13:00–16:50</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 right-notice">
+                <div class="noticecom">
+                    <h3>网络报修</h3>
+                    <p style="padding-left:24px;">请通过“掌上树人”微信公众号的“故障报修”平台进行报修。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

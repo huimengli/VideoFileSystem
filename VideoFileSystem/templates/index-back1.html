@@ -31,25 +31,152 @@
     </div>
 </div>-->
 
-<input type="file" name="name" value="" style="display:none;"/>
+<input type="file" name="name" value="" style="display:none;" />
 <input type="button" name="name" value="导入文件" />
 <div class="progressBar" style="display:none;">
     <div class="progressBarTitle">
 
     </div>
     <div class="progressBarBox">
+        <div class="progressBarValue">
+        </div>
         <div class="progressBarValueBox" style="width:0px">
-            <div class="progressBarValue">
-
-            </div>
         </div>
     </div>
     <div class="progressBarButtonBox">
         <button>确认</button>
         <button>取消</button>
-    </div class="progressBarButtonBox">
+    </div>
+</div>
+<div class="downFilesBox">
+
 </div>
 
+<script>
+    /**下载文件框 */
+    var downFilesBox = lt_code.getAll5(".downFilesBox")[0];
+
+    /**
+     * 下载文件行
+     * @param fileLine
+     */
+    var downFile = function (fileLine) {
+        var href = fileLine.dataset.dir;
+        var a = lt_code.newDom("a", {
+            href: href,
+            download: fileLine.dataset.fileName,
+
+        });
+        a.click();
+    }
+
+    /**
+     * 新文件行
+     * @param {string} fileName 文件名
+     * @param {number} size 文件大小
+     * @param {number} create 创建时间
+     * @param {boolean} isFile 是否是文件
+     * @param {string} dir 文件路径
+     * @param {number} [isDelete] 文件路径
+     */
+    var newEachFile = function (fileName, size, create, isFile, dir, isDelete = 0) {
+        isFile = isFile == null ? true : isFile;
+        isDelete = typeof (isDelete) == "undefined" ? 1 : isDelete;
+
+        /**每个文件行 */
+        var eachFile = lt_code.newDom("div", {
+            class: "eachFile",
+            "data-fileName": fileName,
+            "data-dir": dir,
+            "data-isFile": isFile,
+        });
+
+        /**文件行文件名 */
+        var newEachFileValue = lt_code.newDom("div", {
+            class: "eachFileValue",
+
+        });
+
+        /**文件创建时间 */
+        var newEachFileCreate = lt_code.newDom("div", {
+            class: "eachFileCreate",
+
+        });
+
+        /**文件大小 */
+        var newEachFileSize = lt_code.newDom("div", {
+            class: "eachFileSize",
+
+        });
+
+        /**文件下载按钮所在 */
+        var newEachFileBottom = lt_code.newDom("div", {
+            class: "eachFileBottom",
+
+        });
+
+        /**文件下载按钮 */
+        var newEachFileBottomBottom = lt_code.newDom("div", {
+            class: "eachFileBottomBottom",
+            title: "下载",
+        });
+
+        /**删除文件按钮 */
+        var newEachFileBottomBottom2 = lt_code.newDom("div", {
+            class: "eachFileBottomBottom",
+            title: "删除",
+        });
+
+        newEachFileBottomBottom.innerText = "下载";
+        newEachFileBottomBottom2.innerText = "删除";
+        newEachFileValue.innerText = fileName;
+        if (isFile) {
+            lt_code.addChild(newEachFileBottomBottom, newEachFileBottom);
+            lt_code.addChild(newEachFileBottomBottom2, newEachFileBottom);
+            newEachFileSize.innerText = size;
+            newEachFileCreate.innerText = new Date(create).format("yyyy-MM-dd hh:mm:ss");
+            newEachFileBottomBottom.onmouseup = function () {
+                downFile(eachFile);
+            }
+            newEachFileBottomBottom2.onmouseup = function () {
+                deleteFile(eachFile);
+            }
+            eachFile.title = "文件名称 : " + fileName;
+            eachFile.title += "\n创建时间 : " + new Date(create).format("yyyy年MM月dd hh时mm分ss秒");
+            eachFile.title += "\n文件大小 : " + (size < 1024 ? size + "字节" :
+                size < 1024 * 1024 ? Math.floor(size / 1024 * 100) / 100 + "KB" :
+                    size < 1024 * 1024 * 1024 ? Math.floor(size / 1024 / 1024 * 100) / 100 + "MB" :
+                        Math.floor(size / 1024 / 1024 / 1024 * 100) / 100 + "GB");
+            eachFile.title += "\n文件路径 : " + dir;
+            eachFile.title += "\n是否存在 : " + (isDelete == 0 ? "文件存在" : isDelete == 1 ? "文件已删除,可以找回" : "文件已彻底删除");
+        } else {
+            newEachFileBottom.innerText = "文件夹";
+            newEachFileSize.innerText = "/";
+            newEachFileCreate.innerText = "/";
+            newEachFileValue.style.cursor = "pointer";
+            newEachFileValue.onmousedown = function () {
+                var dir = lt_code.getDomFather(this).dataset.dir;
+                lt_code.history.newSearch(dir);
+            }
+            eachFile.title = "文件夹\n路径 : root" + dir;
+        }
+
+        if (fileName == "/..") {
+            eachFile.title = "返回上一级";
+            //father = father.slice(0,father.length - fileName.length);
+            //eachFile.dataset.father = father;
+            newEachFileValue.onmousedown = function () {
+                lt_code.history.backSearch();
+            }
+        }
+
+        lt_code.addChild(newEachFileValue, eachFile);
+        lt_code.addChild(newEachFileCreate, eachFile);
+        lt_code.addChild(newEachFileSize, eachFile);
+        lt_code.addChild(newEachFileBottom, eachFile);
+        lt_code.addChild(eachFile, downFilesBox);
+    };
+</script>
 <script>
     /**最大错误次数 */
     const MaxErrorTimes = 5;
@@ -84,21 +211,24 @@
 
         button.onmousedown = function () {
             input.click();
-            fileReader.onprogress = function (e) {
-                //console.log(e.loaded);
-                ChangeBar("读取文件中", e.loaded, file.size);
-            }
             input.onchange = function () {
                 var file = input.files[0];
                 lt_code.file = file;
+                fileReader.onprogress = function (e) {
+                    //console.log(e.loaded);
+                    ChangeBar("读取文件中", e.loaded, file.size);
+                }
                 fileReader.readAsArrayBuffer(file);
                 fileReader.onloadstart = function () {
                     ChangeBar("读取文件中", 0, file.size);
                 }
                 fileReader.onload = function () {
                     const fileMD5 = md5(this.result);
-                    console.log("文件读取完成!");
-                    if (confirm("是否上传文件?")) {
+                    //console.log("文件读取完成!");
+                    /**最大的指针 */
+                    const maxIndex = Math.ceil(fileReader.result.byteLength / size);
+                    console.log(maxIndex);
+                    ChangeBar("文件读取完成!", file.size, file.size, function () {
                         /**新建文件 */
                         var newFile = function () {
                             var up = {
@@ -114,7 +244,7 @@
                          * 上传部分
                          * @param i
                          */
-                        var upPart = function (i,index) {
+                        var upPart = function (i, index) {
                             var part = new Uint8ClampedArray(fileReader.result.slice(i, i + size));
                             part = ArrayBufferBase64.encode(part);
                             var partValue = {
@@ -125,7 +255,8 @@
                                 value: part,
                             };
                             //console.log(partValue);
-                            console.log(JSON.stringify(partValue));
+                            //console.log(JSON.stringify(partValue));
+                            ChangeBar("上传数据中", index, maxIndex);
                             socket.emit("testUp", JSON.stringify(partValue));
                         }
                         //while (i < fileReader.result.length) {
@@ -134,15 +265,12 @@
                         //}
                         socket.on("upFile", function (e) {
                             if (e == "newFile") {
-                                /**最大的指针 */
-                                const maxIndex = Math.ceil(fileReader.result.byteLength / size);
-                                console.log(maxIndex);
                                 /**上传文件指针 */
                                 var i = 0;
                                 /**上传文件块指针 */
                                 var index = 0;
                                 //上传第一部分
-                                upPart(i,index);
+                                upPart(i, index);
                                 socket.on("upFileError", function (e) {
                                     console.log(e);
                                     if (e == "fileNotInit") {
@@ -154,10 +282,10 @@
                                             errorTime[e] = 0;
                                             return;
                                         }
-                                    } else if (e["outIndex"]!=undefined) {
-                                        if (errorTime["outIndex"]==undefined||errorTime<MaxErrorTimes) {
+                                    } else if (e["outIndex"] != undefined) {
+                                        if (errorTime["outIndex"] == undefined || errorTime < MaxErrorTimes) {
                                             errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
-                                            upPart(e["outIndex"],index);
+                                            upPart(e["outIndex"], index);
                                             index = e["outIndex"];
                                         } else {
                                             console.error("在服务器上创建文件失败!\n已经超过了最大重试次数!");
@@ -167,7 +295,7 @@
                                     } else if (e == "errorMd5") {
                                         if (errorTime[e] == undefined || errorTime < MaxErrorTimes) {
                                             errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
-                                            upPart(i,index);
+                                            upPart(i, index);
                                         } else {
                                             console.error("传输的内容出错!\n已经超过了最大重试次数!");
                                             errorTime[e] = 0;
@@ -176,15 +304,15 @@
                                     } else if (e == "success") {
                                         if (index >= maxIndex) {
                                             console.log("文件传输已经完成!");
+                                            ChangeBar("文件已经传输完成!", index, maxIndex, ChangeBar.noFuc, ChangeBar.noFuc);
                                             return;
                                         }
                                         i += size;
                                         index += 1;
-                                        upPart(i,index);
+                                        upPart(i, index);
                                         for (var x in errorTime) {
                                             errorTime[x] = 0;
                                         }
-                                        ChangeBar("正在传输中", index, maxIndex);
                                     }
                                 });
                             }
@@ -196,7 +324,7 @@
 
                         //开始上传文件
                         newFile();
-                    }
+                    });
                 }
             }
         }
@@ -267,6 +395,17 @@
         //        });
         //    });
         //}
+
+        //读取后台文件
+        socket.emit("getDownFiles","");
+        socket.on("downFiles", function (e) {
+            //console.log(e);
+            var dict = JSON.parse(e);
+            console.log(dict);
+            for (var i = 0; i < dict.length; i++) {
+                newEachFile(dict[i].name, dict[i].size, dict[i].create * 1000, true, dict[i].path);
+            }
+        });
     }
 
     /**本地base64编码 */
@@ -336,18 +475,17 @@
      * @param index
      * @param maxIndex
      */
-    var ChangeBar = function (title,index, maxIndex, yesFuc = null, noFuc = null) {
-        var bar = lt_code.getAll5(".progressBar")[0];
+    var ChangeBar = function (title, index, maxIndex, yesFuc = null, noFuc = null) {
         var barTitle = lt_code.getAll5(".progressBarTitle")[0];
         var barBox = lt_code.getAll5(".progressBarBox")[0];
         var barValueBox = lt_code.getAll5(".progressBarValueBox")[0];
         var barValue = lt_code.getAll5(".progressBarValue")[0];
         var yes = lt_code.getAll5(".progressBarButtonBox>button")[0];
         var no = lt_code.getAll5(".progressBarButtonBox>button")[1];
-        if (yesFuc) {
+        if (!!yesFuc) {
             this.yesFuc = yesFuc;
         }
-        if (noFuc) {
+        if (!!noFuc) {
             this.noFuc = noFuc;
         }
 
@@ -358,8 +496,8 @@
         bar.style.display = "block";
 
         //显示进度
-        barValueBox.style.width = Math.floor(index / maxIndex) + "%";
-        barValue = Math.floor(index / maxIndex) + "%";
+        barValueBox.style.width = Math.floor(index / maxIndex * 100) + "%";
+        barValue.innerText = Math.floor(index / maxIndex * 10000)/100 + "%";
 
         //显示按键
         if (index >= maxIndex) {
@@ -370,15 +508,20 @@
 
         //修改函数
         if (index >= maxIndex) {
-            yes.onmousedown = yesFuc;
-            no.onmousedown = function () { };
+            yes.onmousedown = this.yesFuc;
+            //no.onmousedown = function () { };
+            no.onmousedown = this.noFuc;
         } else {
             yes.onmousedown = function () { };
-            no.onmousedown = noFuc;
+            no.onmousedown = this.noFuc;
         }
     };
+    ChangeBar.bar = bar = lt_code.getAll5(".progressBar")[0];
     ChangeBar.yesFuc = function () { };
-    ChangeBar.noFuc = function () { };
+    ChangeBar.baseNoFuc = function () {
+        ChangeBar.bar.style.display = "none";
+        this.yesFuc = function () { };
+    };
+    ChangeBar.noFuc = ChangeBar.baseNoFuc;
 </script>
-
 {% endblock %}
