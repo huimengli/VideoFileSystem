@@ -51,10 +51,24 @@
         var href = fileLine.dataset.dir;
         var a = lt_code.newDom("a", {
             href: href,
-            download: fileLine.dataset.fileName,
+            download: fileLine.dataset.filename,
 
         });
         a.click();
+    };
+
+    /**
+     * 删除文件
+     * @param fileLine
+     */
+    var deleteFile = function (fileLine) {
+        /**上传数据 */
+        var up = {
+            n: "cancal",
+            md5: "",
+            name: (typeof (fileLine) == "string") ? fileLine : fileLine.dataset.filename,
+        };
+        socket.emit("testUp", JSON.stringify(up));
     }
 
     /**
@@ -126,7 +140,9 @@
                 downFile(eachFile);
             }
             newEachFileBottomBottom2.onmouseup = function () {
-                deleteFile(eachFile);
+                if (confirm("确认删除文件:\n"+eachFile.dataset.filename)) {
+                    deleteFile(eachFile);
+                }
             }
             eachFile.title = "文件名称 : " + fileName;
             eachFile.title += "\n创建时间 : " + new Date(create).format("yyyy年MM月dd hh时mm分ss秒");
@@ -215,7 +231,14 @@
                     /**最大的指针 */
                     const maxIndex = Math.ceil(fileReader.result.byteLength / size);
                     console.log(maxIndex);
-                    ChangeBar("文件读取完成!", file.size, file.size, function () {
+                    ChangeBar("文件读取完成!\n点击确认上传文件", file.size, file.size, function () {
+                        //修改取消按钮
+                        ChangeBar.noFuc = function () {
+                            deleteFile(file.name);
+
+                            //关闭弹窗
+                            ChangeBar.baseNoFuc();
+                        }
                         /**新建文件 */
                         var newFile = function () {
                             var up = {
@@ -291,7 +314,9 @@
                                     } else if (e == "success") {
                                         if (index >= maxIndex) {
                                             console.log("文件传输已经完成!");
-                                            ChangeBar("文件已经传输完成!", index, maxIndex, ChangeBar.noFuc, ChangeBar.noFuc);
+                                            ChangeBar("文件已经传输完成!", index, maxIndex,function () {
+                                                window.location.href = window.location.href;
+                                            },ChangeBar.baseNoFuc);
                                             return;
                                         }
                                         i += size;
@@ -300,6 +325,10 @@
                                         for (var x in errorTime) {
                                             errorTime[x] = 0;
                                         }
+                                    } else if (e == "fileIsDelete") {
+                                        alert("文件已经删除!");
+                                        ChangeBar.baseNoFuc();
+                                        return;
                                     }
                                 });
                             }
@@ -316,73 +345,6 @@
             }
         }
 
-        //测试直接发送文件(结果出来了,socket似乎是不支持大数据传输)
-        //button.onmousedown = function () {
-        //    input.click();
-        //    input.onchange = function () {
-        //        var file = input.files[0];
-        //        fileReader.onload = function () {
-        //            var bytes = new Uint8Array(this.result);
-        //            socket.emit("testUp2", bytes);
-        //        }
-        //        fileReader.readAsArrayBuffer(file);
-        //    }
-        //}
-        //var upPart = function (str, md5, isPart) {
-        //    //启动会话
-        //    $(function () {
-        //        /**上传数据 */
-        //        var up = {
-        //            uid: window.UID,
-        //            type: isPart,
-        //            part: str,
-        //            md5: md5,
-        //        };
-        //        up = {
-        //            n: "testUp",
-        //            data: lt_code.base64.encode(JSON.stringify(up)),
-        //        };
-
-        //        $.ajax({
-        //            type: "post",
-        //            url: "/api/",
-        //            data: JSON.stringify(up),
-        //            contentType: "application/json; charset=utf-8",
-        //            dataType: "text",
-        //            success: function (data) {
-        //                console.log(data);
-        //                switch (data) {
-        //                    case "Error:NAME":
-        //                    case "Error:UID":
-        //                    case "Error:NOTSIGN":
-        //                        window.location.href = "/sign/";
-        //                        //console.trace("先禁止返回注册");
-        //                        break;
-        //                    case "False":
-        //                    case "Error:NOTFOUND":
-        //                        alert("此设备不存在!");
-        //                        break;
-        //                    case "Error:NO":
-        //                        alert("未知错误!");
-        //                        break;
-        //                    case "Error:EMPTY":
-        //                        alert("没有任何数据!");
-        //                        break;
-        //                    case "True":
-        //                        codeBox.classList.add("codeBoxShow");
-        //                        break;
-        //                    default:
-        //                        alert("未知错误!");
-        //                        break;
-        //                }
-        //            },
-        //            error: function (err) {
-        //                alert(err);
-        //            }
-        //        });
-        //    });
-        //}
-
         //读取后台文件
         socket.emit("getDownFiles","");
         socket.on("downFiles", function (e) {
@@ -393,6 +355,17 @@
                 newEachFile(dict[i].name, dict[i].size, dict[i].create * 1000, true, dict[i].path);
             }
         });
+
+        //文件删除块
+        socket.on("upFileError", function (e) {
+            if (e == "fileIsDelete") {
+                alert("文件已经删除!");
+                window.location.href = window.location.href;
+            } else if (e =="fileNotExists") {
+                alert("文件不存在!");
+                window.location.href = window.location.href;
+            }
+        })
     }
 
     /**本地base64编码 */

@@ -158,9 +158,19 @@ def testUp(args):
 
     elif args['n']=="cancal":
         '''
-        取消上传
+        取消上传,删除文件
         '''
-        pass
+        print("");
+        item.Trace(args);
+        try:
+            os.remove(videoPath+args['name']);
+        except FileNotFoundError:
+            socketio.emit("upFileError","fileNotExists");
+        try:
+            os.remove(videoPath+args['name']+addictionEndName);
+        except :
+            pass
+        socketio.emit("upFileError","fileIsDelete");
 
     return;
 
@@ -200,6 +210,7 @@ def getDownFiles(args):
             rets.append(ret);
             
     socketio.emit("downFiles",json.dumps(rets));
+
 
 @app.route('/api')
 @app.route('/API')
