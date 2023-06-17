@@ -69,7 +69,67 @@
             name: (typeof (fileLine) == "string") ? fileLine : fileLine.dataset.filename,
         };
         socket.emit("testUp", JSON.stringify(up));
-    }
+    };
+
+    /**
+     * 预览文件
+     * @param fileLine
+     */
+    var previewFile = function (fileLine) {
+        //var file = typeof (fileLine) == "string" ? fileLine : fileLine.dataset.filename;
+        var file = fileLine.dataset.dir;
+        var endName = file.split(".");
+        endName = endName[endName.length - 1];
+        switch (endName.toUpperCase()) {
+            //case "FLV":
+            //case "AVI":
+            //case "GIF":
+            //case "MPG":
+            //case "MPEG":
+            //case "M4V":
+            //case "MOV":
+            case "WEBM":
+            case "OGG":
+            case "MP4":
+                var video = lt_code.newDom("video", {
+                    src: file,
+                    controls: true,
+                    style: {
+                        width: "100vw",
+                        height: "calc(100vh - 50px)",
+                        position: "fixed",
+                        left: "0px",
+                        top: "50px",
+                        "z-index": 1000,
+                        "background-color":"black",
+                    }
+                });
+                var close = lt_code.newDom("button", {
+                    style: {
+                        width: "40px",
+                        height: "40px",
+                        position: "fixed",
+                        right: "0px",
+                        top: "50px",
+                        "z-index": 1001,
+                        "background-color": "red",
+                        color: "white",
+                        "font-size": "30px",
+                        "line-height":"40px",
+                    },
+                    innerText: "X"
+                });
+                lt_code.addChild(video);
+                lt_code.addChild(close);
+                close.onmousedown = function () {
+                    lt_code.removeChild(video);
+                    lt_code.removeChild(close);
+                };
+                break;
+            default:
+                alert("不支持的视频格式!");
+        }
+    };
 
     /**
      * 新文件行
@@ -116,6 +176,11 @@
 
         });
 
+        var newEachFileBottomBottom3 = lt_code.newDom("div", {
+            class: "eachFileBottomBottom",
+            title: "预览",
+        });
+
         /**文件下载按钮 */
         var newEachFileBottomBottom = lt_code.newDom("div", {
             class: "eachFileBottomBottom",
@@ -130,8 +195,10 @@
 
         newEachFileBottomBottom.innerText = "下载";
         newEachFileBottomBottom2.innerText = "删除";
+        newEachFileBottomBottom3.innerText = "预览";
         newEachFileValue.innerText = fileName;
         if (isFile) {
+            lt_code.addChild(newEachFileBottomBottom3, newEachFileBottom);
             lt_code.addChild(newEachFileBottomBottom, newEachFileBottom);
             lt_code.addChild(newEachFileBottomBottom2, newEachFileBottom);
             newEachFileSize.innerText = size;
@@ -143,6 +210,9 @@
                 if (confirm("确认删除文件:\n"+eachFile.dataset.filename)) {
                     deleteFile(eachFile);
                 }
+            }
+            newEachFileBottomBottom3.onmouseup = function () {
+                previewFile(eachFile);
             }
             eachFile.title = "文件名称 : " + fileName;
             eachFile.title += "\n创建时间 : " + new Date(create).format("yyyy年MM月dd hh时mm分ss秒");

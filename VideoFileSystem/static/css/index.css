@@ -119,7 +119,7 @@ div.eachFile > div:last-child {
 }
 
 div.eachFile > div.eachFileBottom > div.eachFileBottomBottom {
-    width: 33%;
+    width: 30%;
     height: 30px;
     border: 1px solid snow;
     /*margin: -3px auto;*/
@@ -129,7 +129,7 @@ div.eachFile > div.eachFileBottom > div.eachFileBottomBottom {
     /* text-align: center; */
     float: left;
     /* margin: auto; */
-    margin-left: calc( ( 100% - 66% ) / 3);
+    margin-left: calc( ( 100% - 90% ) / 4);
 }
 
 div.eachFile > div.eachFileBottom > div.eachFileBottomBottom:hover {
