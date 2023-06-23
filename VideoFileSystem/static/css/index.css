@@ -1,15 +1,29 @@
 .upBox {
     width: calc(100% + 2px);
     margin: 0 auto;
-    text-align: center;
-    height: 50px;
+    /*text-align: center;*/
+    height: 51px;
     line-height: 50px;
 }
 
 .upBox > input[type=button] {
-    width: 100%;
+    width: 82.5%;
     max-width: 100%;
     border: 1px solid;
+    float:left;
+    border-bottom:0px;
+}
+
+.upBox > .upBoxValue {
+    width: 17.5%;
+    height: 51px;
+    float: left;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid;
+    border-bottom: 0px;
+    border-left: 0px;
+    line-height:17px;
 }
 
 .progressBar {

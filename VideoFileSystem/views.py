@@ -3,6 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
+import re
 from flask import render_template,request
 from VideoFileSystem import app,socketio
 import json;
@@ -23,7 +24,66 @@ tsPath = "./VideoFileSystem/static/VideosTS/";          #TS文件路径
 tsAddPath = "/static/VideosTS/";                        #TS文件路径(追加)
 addictionEndName = ".update";                           #更新文件后缀名
 
+iniFile = "videoFileSystem.json";                       #视频数据文件
+iniStrack = {                                           #数据文件结构
+    "files":0,                                          #文件数
+    "visits":0,                                         #访问数
+    "useSize":0,                                        #服务器当前使用的硬盘大小
+    "useAllSize":0,                                     #服务器全部使用的硬盘大小
+    "maxSize":0,                                        #服务器最大使用的硬盘大小
+    "filesInfo":[],                                     #服务器文件签名(字符串数组)
+    "filesSize":[],                                     #服务器文件大小(数字数组)
+    "download":[],                                      #服务器文件下载次数(数字数组)
+}
+
 year = '2021';
+
+def ReadIni():
+    '''
+    读取ini
+    '''
+    if os.path.exists(iniFile):
+        with open(iniFile,"r") as f:
+            value = f.read();
+            value = json.loads(value);
+            print(value);
+            for x in value:
+                iniStrack[x] = value[x];
+    else:
+        with open(iniFile,"w") as f:
+            pass
+
+def UpdateIni():
+    '''
+    更新ini
+    '''
+    allFiles = getFiles(videoPath);
+    iniStrack['files'] = len(allFiles);
+    size = 0;
+    addSize = 0;
+    for f in allFiles:
+        s = os.path.getsize(videoPath+f);
+        size += s;
+        fmd5 = hashlib.md5(f.encode()).hexdigest();
+        try:
+            iniStrack['filesInfo'].index(fmd5);
+        except ValueError:
+            iniStrack['filesInfo'].append(fmd5);
+            addSize += s;
+            iniStrack['filesSize'].append(s);
+            iniStrack['download'].append(0);
+    iniStrack['useSize'] = size;
+    iniStrack['useAllSize'] += addSize;
+    return;
+
+def WriteIni():
+    '''
+    写入ini
+    '''
+    with open(iniFile,"w") as f:
+        value = json.dumps(iniStrack);
+        f.write(value);
+    return;
 
 def getFiles(dirPath:str):
     '''
@@ -34,6 +94,9 @@ def getFiles(dirPath:str):
         ret.append(fileName);
     return ret;
 
+ReadIni();
+UpdateIni();
+WriteIni();
 
 @app.route('/')
 @app.route('/home')
@@ -149,6 +212,8 @@ def testUp(args):
                         uf.write("\n");
                     if md5=='d41d8cd98f00b204e9800998ecf8427e':
                         os.remove(testUpFile.path+addictionEndName);
+                        UpdateIni();
+                        WriteIni();
                     socketio.emit("upFileError","success");
             else:
                 #socketio.emit("upFileError","outIndex",testUpFileIndex);
@@ -170,6 +235,8 @@ def testUp(args):
             os.remove(videoPath+args['name']+addictionEndName);
         except :
             pass
+        UpdateIni();
+        WriteIni();
         socketio.emit("upFileError","fileIsDelete");
 
     return;
@@ -191,6 +258,12 @@ def getDownFiles(args):
     '''
     files = getFiles(videoPath);
     rets = [];
+    sysinfo = {};
+    sysinfo['useSize'] = iniStrack['useSize'];
+    sysinfo['useAllSize'] = iniStrack['useAllSize'];
+    sysinfo['maxSize'] = iniStrack['maxSize'];
+    sysinfo['download'] = 0;
+    sysinfo['visits'] = iniStrack['visits'];
     for x in files:
         try:
             files.index(x+addictionEndName)
@@ -201,16 +274,45 @@ def getDownFiles(args):
             fileSt = os.stat(file);
             create = fileSt.st_ctime;
             size = fileSt.st_size;
+            fmd5 = hashlib.md5(x.encode()).hexdigest();
+            index = iniStrack['filesInfo'].index(fmd5);
+            download = iniStrack['download'][index];
+            #sysinfo['download']+=size*download;
             ret = {
                 "path":rPath,
                 "name":x,
                 "create":create,
                 "size":size,
-            }
+                "download":download,
+            };
             rets.append(ret);
+    for x in range(0,len(iniStrack['filesInfo'])):
+        download = iniStrack['download'][x];
+        #size = iniStrack['filesSize'][x];
+        #sysinfo['download']+=size*download;
+        sysinfo['download']+=download;
             
     socketio.emit("downFiles",json.dumps(rets));
+    socketio.emit("systemInfo",json.dumps(sysinfo));
 
+@socketio.on("downloadFile")
+def downloadFile(args):
+    '''
+    标记下载
+    '''
+    if len(args)<100:
+        print("\n");
+        item.Trace(args);
+    args = json.loads(args);
+    try:
+        name = args['name'];
+        name = hashlib.md5(name.encode()).hexdigest();
+        index = iniStrack['filesInfo'].index(name);
+        iniStrack['download'][index]+=1;
+        WriteIni();
+        return "true";
+    except ValueError:
+        return "error";
 
 @app.route('/api')
 @app.route('/API')

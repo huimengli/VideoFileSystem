@@ -6,6 +6,13 @@
 <div class="upBox">
     <input type="file" name="name" value="" style="display:none;" />
     <input type="button" name="name" value="导入文件" />
+    <div class="upBoxValue">
+        已使用:0b
+        <br/>
+        总上传:0b
+        <br />
+        下载量:0b
+    </div>
 </div>
 <div class="progressBar" style="display:none;">
     <div class="progressBarTitle">
@@ -49,10 +56,15 @@
      */
     var downFile = function (fileLine) {
         var href = fileLine.dataset.dir;
+        var name = fileLine.dataset.filename;
+        var up = {
+            n: "downloadFile",
+            name: name,
+        };
+        socket.emit("downloadFile", JSON.stringify(up));
         var a = lt_code.newDom("a", {
             href: href,
             download: fileLine.dataset.filename,
-
         });
         a.click();
     };
@@ -138,9 +150,10 @@
      * @param {number} create 创建时间
      * @param {boolean} isFile 是否是文件
      * @param {string} dir 文件路径
+     * @param {number} download 下载次数
      * @param {number} [isDelete] 文件路径
      */
-    var newEachFile = function (fileName, size, create, isFile, dir, isDelete = 0) {
+    var newEachFile = function (fileName, size, create, isFile, dir,download, isDelete = 0) {
         isFile = isFile == null ? true : isFile;
         isDelete = typeof (isDelete) == "undefined" ? 1 : isDelete;
 
@@ -150,6 +163,7 @@
             "data-fileName": fileName,
             "data-dir": dir,
             "data-isFile": isFile,
+            "data-download": download,
         });
 
         /**文件行文件名 */
@@ -221,6 +235,7 @@
                     size < 1024 * 1024 * 1024 ? Math.floor(size / 1024 / 1024 * 100) / 100 + "MB" :
                         Math.floor(size / 1024 / 1024 / 1024 * 100) / 100 + "GB");
             eachFile.title += "\n文件路径 : " + dir;
+            eachFile.title += "\n下载次数 : " + download.toString();
             eachFile.title += "\n是否存在 : " + (isDelete == 0 ? "文件存在" : isDelete == 1 ? "文件已删除,可以找回" : "文件已彻底删除");
         } else {
             newEachFileBottom.innerText = "文件夹";
@@ -422,8 +437,20 @@
             var dict = JSON.parse(e);
             console.log(dict);
             for (var i = 0; i < dict.length; i++) {
-                newEachFile(dict[i].name, dict[i].size, dict[i].create * 1000, true, dict[i].path);
+                newEachFile(dict[i].name, dict[i].size, dict[i].create * 1000, true, dict[i].path, dict[i].download);
             }
+        });
+
+        //读取数据
+        socket.on("systemInfo", function (e) {
+            var dict = JSON.parse(e);
+            console.log(dict);
+            var inner = lt_code.getAll5(".upBox>.upBoxValue")[0];
+            var value = "已使用 : " + lt_code.getSize(dict.useSize);
+            value += "  总上传 : " + lt_code.getSize(dict.useAllSize);
+            value += "\n下载数 : " + dict.download;
+            value += "  访问数 : " + dict.visits;
+            inner.innerText = value;
         });
 
         //文件删除块
