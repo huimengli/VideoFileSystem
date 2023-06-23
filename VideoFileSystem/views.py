@@ -263,6 +263,7 @@ def getDownFiles(args):
     sysinfo['useAllSize'] = iniStrack['useAllSize'];
     sysinfo['maxSize'] = iniStrack['maxSize'];
     sysinfo['download'] = 0;
+    iniStrack['visits'] += 1;
     sysinfo['visits'] = iniStrack['visits'];
     for x in files:
         try:
@@ -291,7 +292,7 @@ def getDownFiles(args):
         #size = iniStrack['filesSize'][x];
         #sysinfo['download']+=size*download;
         sysinfo['download']+=download;
-            
+    WriteIni();
     socketio.emit("downFiles",json.dumps(rets));
     socketio.emit("systemInfo",json.dumps(sysinfo));
 

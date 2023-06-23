@@ -7,11 +7,10 @@
     <input type="file" name="name" value="" style="display:none;" />
     <input type="button" name="name" value="导入文件" />
     <div class="upBoxValue">
-        已使用:0b
-        <br/>
-        总上传:0b
-        <br />
-        下载量:0b
+        <div class="upBoxValueInner">已使用 : 0B</div>
+        <div class="upBoxValueInner">总上传 : 0B</div>
+        <div class="upBoxValueInner">下载数 : 0</div>
+        <div class="upBoxValueInner">访问数 : 0</div>
     </div>
 </div>
 <div class="progressBar" style="display:none;">
@@ -446,11 +445,12 @@
             var dict = JSON.parse(e);
             console.log(dict);
             var inner = lt_code.getAll5(".upBox>.upBoxValue")[0];
-            var value = "已使用 : " + lt_code.getSize(dict.useSize);
-            value += "  总上传 : " + lt_code.getSize(dict.useAllSize);
-            value += "\n下载数 : " + dict.download;
-            value += "  访问数 : " + dict.visits;
-            inner.innerText = value;
+            var value = "<div class=\"upBoxValueInner\">已使用 : " + lt_code.getSize(dict.useSize);
+            value += "</div><div class=\"upBoxValueInner\">总上传 : " + lt_code.getSize(dict.useAllSize);
+            value += "</div><div class=\"upBoxValueInner\">下载数 : " + dict.download;
+            value += "</div><div class=\"upBoxValueInner\">访问数 : " + dict.visits;
+            value += "</div>";
+            inner.innerHTML = value;
         });
 
         //文件删除块
