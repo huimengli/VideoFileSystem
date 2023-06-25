@@ -423,6 +423,14 @@ def api():
                     return "Error:NOTSIGN";
                 return "Error:NO";
 
+            elif value['n'] == "exit":
+                try:
+                    session['uid'] = "";
+                    socketio.emit("upFileError","Error:UID");
+                    return json.dumps({"type":100});
+                except Exception:
+                    return json.dumps({"type":404});
+
         except Exception as e:
             raise e;
             print("错误内容:"+str(e));

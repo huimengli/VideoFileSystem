@@ -29,6 +29,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('home') }}">主页</a></li>
                     <li><a href="{{ url_for('login') }}">登录</a></li>
+                    <li><a class="exit" href="#">退出</a></li>
                     <li><!--<a href="{{ url_for('about') }}">About</a>--></li>
                     <li><!--<a href="{{ url_for('contact') }}">Contact</a>--></li>
                 </ul>
@@ -48,6 +49,43 @@
     <script src="/static/scripts/bootstrap.js"></script>
     <script src="/static/scripts/respond.js"></script>
     {% block scripts %}{% endblock %}
+    <script>
+        /**退出按钮 */
+        var exitButton = lt_code.getAll5(".collapse>.nav>li>.exit")[0];
+        exitButton.onmouseup = function () {
+            var up = {
+                n: "exit",
+                uid: UID,
+            };
 
+            $.ajax({
+                type: "post",
+                url: "/api/",
+                data: JSON.stringify(up),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    console.log(data);
+                    try {
+                        data = JSON.parse(data);
+                        console.log(data['type']);
+                        switch (data['type']) {
+                            case 100: alert("登出成功!"); window.location.href = "{{url_for('login')}}"; break;
+
+                            case 404: alert("登出失败!\n账户不存在!"); break;
+
+                            default: alert("登出失败!\n错误:原因未知!"); break;
+                        }
+                    } catch (e) {
+                        alert("登出失败!\n错误:未知错误!");
+                        console.error(e);
+                    }
+                },
+                error: function (err) {
+                    alert(err);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
