@@ -7,6 +7,8 @@
     <link href="../static/content/bootstrap.min.css" rel="stylesheet" />
     <link href="../static/css/login.css" rel="stylesheet" />
     <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <script>window.UID = lt_code.cookie.getCookie("uid") || function () { var uid = lt_code.variable.newUID(lt_code.variable.browserInfo); lt_code.cookie.saveCookie("uid", uid, 7); return uid; }();</script>
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
     <style>
         .loginEachBox {
         }
@@ -18,7 +20,7 @@
         .loginEachBox > .eachBox > .line {
             height: 50px;
             float: left;
-            width:100%
+            width: 100%
         }
 
         .loginEachBox > .eachBox > .line:nth-child(3) {
@@ -27,12 +29,12 @@
             align-items: baseline;
         }
 
-        .loginEachBox>.eachBox>.line:nth-child(3)>span{
-            color:#999;
+        .loginEachBox > .eachBox > .line:nth-child(3) > span {
+            color: #999;
         }
-        
-        .loginEachBox>.eachBox>.line:nth-child(3)>span>input{
-            color:#999;
+
+        .loginEachBox > .eachBox > .line:nth-child(3) > span > input {
+            color: #999;
         }
 
         .loginEachBox > .eachBox > .line > * {
@@ -42,19 +44,19 @@
             padding-bottom: 10px;
         }
 
-        .loginEachBox>.eachBox>.line>img{
+        .loginEachBox > .eachBox > .line > img {
         }
 
-        .loginEachBox>.eachBox>.line>.inputBox{
-            border-bottom:1px solid #999;
+        .loginEachBox > .eachBox > .line > .inputBox {
+            border-bottom: 1px solid #999;
         }
 
-        input[type=text],input[type=password]{
-            outline:none;
+        input[type=text], input[type=password] {
+            outline: none;
         }
 
-        .line input[type=password]{
-            width:230px;
+        .line input[type=password] {
+            width: 230px;
         }
 
         .line > button {
@@ -106,7 +108,7 @@
                         <a href="https://rzht.zjsru.edu.cn/im/securitycenter/findPwd/index.zf">忘记登录密码?</a>
                     </div>
                     <div class="line">
-                        <button onclick="window.location.href='{{url_for("home")}}'">登录</button>
+                        <button class="loginButton">登录</button>
                     </div>
                 </div>
             </div>
@@ -139,3 +141,78 @@
     </div>
 </body>
 </html>
+<script>
+    /**登录按钮 */
+    var loginButton = lt_code.getAll5(".line>.loginButton")[0];
+    /**用户数据 */
+    var userInfo = {
+        name: "",
+        password: "",
+        uid: UID,
+        remumber:false,
+    };
+
+    window.onload = function () {
+        var user = lt_code.getAll5(".inputBox>input")[0];
+        var pwd = lt_code.getAll5(".inputBox>input")[1];
+        var remumber = lt_code.getAll5(".inputBox>span>input")[2];
+
+        //读取本地的记录
+        if (lt_code.cookie.getCookie("userinfo")) {
+            userInfo = JSON.parse(lt_code.cookie.getCookie("userinfo"));
+            remumber.checked = userInfo.remumber;
+            user.value = userInfo.name;
+            pwd.value = lt_code.variable.complement("", 8, "*");
+        }
+
+        pwd.onchange = function () {
+            userInfo.password = "";
+        }
+
+        loginButton.onmouseup = function () {
+            userInfo = {
+                name: user.value,
+                password: userInfo.password == "" ? lt_code.SHA256.decode(pwd.value) : userInfo.password,
+                uid: UID,
+                remumber: remumber.checked,
+            };
+
+            if (remumber.checked) {
+                lt_code.cookie.saveCookie("userinfo", JSON.stringify(userInfo), 7);
+            }
+
+            var up = {
+                n: "signOn",
+                data: lt_code.base64.encode(JSON.stringify(userInfo)),
+            };
+
+            $.ajax({
+                type: "post",
+                url: "/api/",
+                data: JSON.stringify(up),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    console.log(data);
+                    try {
+                        data = JSON.parse(data);
+                        console.log(data['type']);
+                        switch (data['type']) {
+                            case 100: alert("登录成功!"); window.location.href = "{{url_for('home')}}"; break;
+
+                            case 404: alert("登录失败!\n账户不存在!"); break;
+
+                            default: alert("登录失败!\n错误:原因未知!"); break;
+                        }
+                    } catch (e) {
+                        alert("登录失败!\n错误:未知错误!");
+                        console.error(e);
+                    }
+                },
+                error: function (err) {
+                    alert(err);
+                }
+            });
+        }
+    };
+</script>

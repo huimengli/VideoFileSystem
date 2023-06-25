@@ -47,7 +47,7 @@ img.xiaoxun {
     /* display: flex; */
     flex-direction: row-reverse;
     float: right;
-    position: relative;
+    position: absolute;
     top: 20%;
     background-color: white;
     /* margin-right: 99px; */

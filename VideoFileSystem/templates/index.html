@@ -59,6 +59,7 @@
         var up = {
             n: "downloadFile",
             name: name,
+            uid:UID,
         };
         socket.emit("downloadFile", JSON.stringify(up));
         var a = lt_code.newDom("a", {
@@ -78,6 +79,7 @@
             n: "cancal",
             md5: "",
             name: (typeof (fileLine) == "string") ? fileLine : fileLine.dataset.filename,
+            uid: UID,
         };
         socket.emit("testUp", JSON.stringify(up));
     };
@@ -331,6 +333,7 @@
                                 name: file.name,
                                 uptime: file.lastModified,
                                 size: file.size,
+                                uid: UID,
                             };
                             socket.emit("testUp", JSON.stringify(up));
                         };
@@ -347,6 +350,7 @@
                                 index: index,
                                 length: part.length,
                                 value: part,
+                                uid: UID,
                             };
                             //console.log(partValue);
                             //console.log(JSON.stringify(partValue));
@@ -358,63 +362,97 @@
                         //    socket.on("")
                         //}
                         socket.on("upFile", function (e) {
-                            if (e == "newFile") {
-                                /**上传文件指针 */
-                                var i = 0;
-                                /**上传文件块指针 */
-                                var index = 0;
-                                //上传第一部分
-                                upPart(i, index);
-                                socket.on("upFileError", function (e) {
-                                    console.log(e);
-                                    if (e == "fileNotInit") {
-                                        if (errorTime[e] == undefined || errorTime < MaxErrorTimes) {
-                                            errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
-                                            newFile();
-                                        } else {
-                                            console.error("在服务器上创建文件失败!\n已经超过了最大重试次数!");
-                                            errorTime[e] = 0;
-                                            return;
-                                        }
-                                    } else if (e["outIndex"] != undefined) {
-                                        if (errorTime["outIndex"] == undefined || errorTime < MaxErrorTimes) {
-                                            errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
-                                            upPart(e["outIndex"], index);
-                                            index = e["outIndex"];
-                                        } else {
-                                            console.error("在服务器上创建文件失败!\n已经超过了最大重试次数!");
-                                            errorTime[e] = 0;
-                                            return;
-                                        }
-                                    } else if (e == "errorMd5") {
-                                        if (errorTime[e] == undefined || errorTime < MaxErrorTimes) {
-                                            errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
-                                            upPart(i, index);
-                                        } else {
-                                            console.error("传输的内容出错!\n已经超过了最大重试次数!");
-                                            errorTime[e] = 0;
-                                            return;
-                                        }
-                                    } else if (e == "success") {
-                                        if (index >= maxIndex) {
-                                            console.log("文件传输已经完成!");
-                                            ChangeBar("文件已经传输完成!", index, maxIndex,function () {
-                                                window.location.href = window.location.href;
-                                            },ChangeBar.baseNoFuc);
-                                            return;
-                                        }
-                                        i += size;
-                                        index += 1;
+                            switch (e) {
+                                case "Error:NAME":
+                                case "Error:UID":
+                                case "Error:NOTSIGN":
+                                    window.location.href = "{{url_for('login')}}";
+                                    //console.trace("先禁止返回注册");
+                                    break;
+                                case "Error:NO":
+                                    alert("未知错误!");
+                                    break;
+                                case "Error:EMPTY":
+                                    alert("没有任何数据!");
+                                    break;
+                                case "True":
+                                default:
+                                    if (e == "newFile") {
+                                        /**上传文件指针 */
+                                        var i = 0;
+                                        /**上传文件块指针 */
+                                        var index = 0;
+                                        //上传第一部分
                                         upPart(i, index);
-                                        for (var x in errorTime) {
-                                            errorTime[x] = 0;
-                                        }
-                                    } else if (e == "fileIsDelete") {
-                                        alert("文件已经删除!");
-                                        ChangeBar.baseNoFuc();
-                                        return;
+                                        socket.on("upFileError", function (e) {
+                                            console.log(e);
+                                            switch (e) {
+                                                case "Error:NAME":
+                                                case "Error:UID":
+                                                case "Error:NOTSIGN":
+                                                    window.location.href = "{{url_for('login')}}";
+                                                    //console.trace("先禁止返回注册");
+                                                    break;
+                                                case "Error:NO":
+                                                    alert("未知错误!");
+                                                    break;
+                                                case "Error:EMPTY":
+                                                    alert("没有任何数据!");
+                                                    break;
+                                                case "True":
+                                                default:
+                                                    break;
+                                            }
+                                            if (e == "fileNotInit") {
+                                                if (errorTime[e] == undefined || errorTime < MaxErrorTimes) {
+                                                    errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
+                                                    newFile();
+                                                } else {
+                                                    console.error("在服务器上创建文件失败!\n已经超过了最大重试次数!");
+                                                    errorTime[e] = 0;
+                                                    return;
+                                                }
+                                            } else if (e["outIndex"] != undefined) {
+                                                if (errorTime["outIndex"] == undefined || errorTime < MaxErrorTimes) {
+                                                    errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
+                                                    upPart(e["outIndex"], index);
+                                                    index = e["outIndex"];
+                                                } else {
+                                                    console.error("在服务器上创建文件失败!\n已经超过了最大重试次数!");
+                                                    errorTime[e] = 0;
+                                                    return;
+                                                }
+                                            } else if (e == "errorMd5") {
+                                                if (errorTime[e] == undefined || errorTime < MaxErrorTimes) {
+                                                    errorTime[e] = !errorTime[e] ? 1 : errorTime[e] + 1;
+                                                    upPart(i, index);
+                                                } else {
+                                                    console.error("传输的内容出错!\n已经超过了最大重试次数!");
+                                                    errorTime[e] = 0;
+                                                    return;
+                                                }
+                                            } else if (e == "success") {
+                                                if (index >= maxIndex) {
+                                                    console.log("文件传输已经完成!");
+                                                    ChangeBar("文件已经传输完成!", index, maxIndex, function () {
+                                                        window.location.href = window.location.href;
+                                                    }, ChangeBar.baseNoFuc);
+                                                    return;
+                                                }
+                                                i += size;
+                                                index += 1;
+                                                upPart(i, index);
+                                                for (var x in errorTime) {
+                                                    errorTime[x] = 0;
+                                                }
+                                            } else if (e == "fileIsDelete") {
+                                                alert("文件已经删除!");
+                                                ChangeBar.baseNoFuc();
+                                                return;
+                                            }
+                                        });
                                     }
-                                });
+                                    break;
                             }
                         });
 
@@ -430,37 +468,88 @@
         }
 
         //读取后台文件
-        socket.emit("getDownFiles","");
+        var up = {
+            uid: UID,
+        }
+        socket.emit("getDownFiles", JSON.stringify(up));
         socket.on("downFiles", function (e) {
             //console.log(e);
-            var dict = JSON.parse(e);
-            console.log(dict);
-            for (var i = 0; i < dict.length; i++) {
-                newEachFile(dict[i].name, dict[i].size, dict[i].create * 1000, true, dict[i].path, dict[i].download);
+            switch (e) {
+                case "Error:NAME":
+                case "Error:UID":
+                case "Error:NOTSIGN":
+                    window.location.href = "{{url_for('login')}}";
+                    //console.trace("先禁止返回注册");
+                    break;
+                case "Error:NO":
+                    alert("未知错误!");
+                    break;
+                case "Error:EMPTY":
+                    alert("没有任何数据!");
+                    break;
+                case "True":
+                default:
+                    var dict = JSON.parse(e);
+                    console.log(dict);
+                    for (var i = 0; i < dict.length; i++) {
+                        newEachFile(dict[i].name, dict[i].size, dict[i].create * 1000, true, dict[i].path, dict[i].download);
+                    }
             }
         });
 
         //读取数据
         socket.on("systemInfo", function (e) {
-            var dict = JSON.parse(e);
-            console.log(dict);
-            var inner = lt_code.getAll5(".upBox>.upBoxValue")[0];
-            var value = "<div class=\"upBoxValueInner\">已使用 : " + lt_code.getSize(dict.useSize);
-            value += "</div><div class=\"upBoxValueInner\">总上传 : " + lt_code.getSize(dict.useAllSize);
-            value += "</div><div class=\"upBoxValueInner\">下载数 : " + dict.download;
-            value += "</div><div class=\"upBoxValueInner\">访问数 : " + dict.visits;
-            value += "</div>";
-            inner.innerHTML = value;
+            switch (e) {
+                case "Error:NAME":
+                case "Error:UID":
+                case "Error:NOTSIGN":
+                    window.location.href = "{{url_for('login')}}";
+                    //console.trace("先禁止返回注册");
+                    break;
+                case "Error:NO":
+                    alert("未知错误!");
+                    break;
+                case "Error:EMPTY":
+                    alert("没有任何数据!");
+                    break;
+                case "True":
+                default:
+                    var dict = JSON.parse(e);
+                    console.log(dict);
+                    var inner = lt_code.getAll5(".upBox>.upBoxValue")[0];
+                    var value = "<div class=\"upBoxValueInner\">已使用 : " + lt_code.getSize(dict.useSize);
+                    value += "</div><div class=\"upBoxValueInner\">总上传 : " + lt_code.getSize(dict.useAllSize);
+                    value += "</div><div class=\"upBoxValueInner\">下载数 : " + dict.download;
+                    value += "</div><div class=\"upBoxValueInner\">访问数 : " + dict.visits;
+                    value += "</div>";
+                    inner.innerHTML = value;
+            }
         });
 
         //文件删除块
         socket.on("upFileError", function (e) {
-            if (e == "fileIsDelete") {
-                alert("文件已经删除!");
-                window.location.href = window.location.href;
-            } else if (e =="fileNotExists") {
-                alert("文件不存在!");
-                window.location.href = window.location.href;
+            switch (e) {
+                case "Error:NAME":
+                case "Error:UID":
+                case "Error:NOTSIGN":
+                    window.location.href = "{{url_for('login')}}";
+                    //console.trace("先禁止返回注册");
+                    break;
+                case "Error:NO":
+                    alert("未知错误!");
+                    break;
+                case "Error:EMPTY":
+                    alert("没有任何数据!");
+                    break;
+                case "True":
+                default:
+                    if (e == "fileIsDelete") {
+                        alert("文件已经删除!");
+                        window.location.href = window.location.href;
+                    } else if (e == "fileNotExists") {
+                        alert("文件不存在!");
+                        window.location.href = window.location.href;
+                    }
             }
         })
     }

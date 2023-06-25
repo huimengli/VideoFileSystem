@@ -4,7 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 import re
-from flask import render_template,request
+from flask import render_template,request,session,url_for
 from VideoFileSystem import app,socketio
 import json;
 from VideoFileSystem.fileSystem import files,fileSystem;
@@ -99,7 +99,7 @@ UpdateIni();
 WriteIni();
 
 @app.route('/')
-@app.route('/home')
+@app.route('/index')
 def home():
     """Renders the home page."""
     return render_template(
@@ -167,6 +167,18 @@ def testUp(args):
         '''
         创建新文件
         '''
+        try:
+            session["nowUser"]=="pzm";
+        except Exception:
+            socketio.emit("upFileError","Error:NOTSIGN");
+            return;
+        if session['nowUser']!="pzm" and session['nowUser']!="lt" and session['nowUser']!="zjsru":
+            socketio.emit("upFileError","Error:NAME");
+            return;
+        elif session['uid']!=args['uid']:
+            socketio.emit("upFileError","Error:UID");
+            return;
+
         testUpFile.name = args['name'];
         testUpFile.md5 = args['md5'];
         testUpFile.uptime = args['uptime'];
@@ -191,6 +203,18 @@ def testUp(args):
         '''
         写入内容
         '''
+        try:
+            session["nowUser"]=="pzm";
+        except Exception:
+            socketio.emit("upFileError","Error:NOTSIGN");
+            return;
+        if session['nowUser']!="pzm" and session['nowUser']!="lt" and session['nowUser']!="zjsru":
+            socketio.emit("upFileError","Error:NAME");
+            return;
+        elif session['uid']!=args['uid']:
+            socketio.emit("upFileError","Error:UID");
+            return;
+
         if testUpFile.name=="":
             socketio.emit("upFileError","fileNotInit");
             return;
@@ -225,6 +249,18 @@ def testUp(args):
         '''
         取消上传,删除文件
         '''
+        try:
+            session["nowUser"]=="pzm";
+        except Exception:
+            socketio.emit("upFileError","Error:NOTSIGN");
+            return;
+        if session['nowUser']!="pzm" and session['nowUser']!="lt" and session['nowUser']!="zjsru":
+            socketio.emit("upFileError","Error:NAME");
+            return;
+        elif session['uid']!=args['uid']:
+            socketio.emit("upFileError","Error:UID");
+            return;
+
         print("");
         item.Trace(args);
         try:
@@ -256,6 +292,19 @@ def getDownFiles(args):
     '''
     获取下载的文件列表
     '''
+    args = json.loads(args);
+    try:
+        session["nowUser"]=="pzm";
+    except Exception:
+        socketio.emit("upFileError","Error:NOTSIGN");
+        return;
+    if session['nowUser']!="pzm" and session['nowUser']!="lt" and session['nowUser']!="zjsru":
+        socketio.emit("upFileError","Error:NAME");
+        return;
+    elif session['uid']!=args['uid']:
+        socketio.emit("upFileError","Error:UID");
+        return;
+
     files = getFiles(videoPath);
     rets = [];
     sysinfo = {};
@@ -306,6 +355,18 @@ def downloadFile(args):
         item.Trace(args);
     args = json.loads(args);
     try:
+        session["nowUser"]=="pzm";
+    except Exception:
+        socketio.emit("upFileError","Error:NOTSIGN");
+        return;
+    if session['nowUser']!="pzm" and session['nowUser']!="lt" and session['nowUser']!="zjsru":
+        socketio.emit("upFileError","Error:NAME");
+        return;
+    elif session['uid']!=args['uid']:
+        socketio.emit("upFileError","Error:UID");
+        return;
+
+    try:
         name = args['name'];
         name = hashlib.md5(name.encode()).hexdigest();
         index = iniStrack['filesInfo'].index(name);
@@ -315,9 +376,9 @@ def downloadFile(args):
     except ValueError:
         return "error";
 
-@app.route('/api')
-@app.route('/API')
-@app.route('/Api')
+@app.route('/api/',methods=['GET','POST'])
+@app.route('/API/',methods=['GET','POST'])
+@app.route('/Api/',methods=['GET','POST'])
 #@socketio.on('api')
 def api():
     '''
@@ -335,8 +396,32 @@ def api():
     if len(values)>0:
         try:
             value = json.loads(values);
-            if value['n']=="testUp":
-                pass
+            if value['n']=="signOn":
+                data = json.loads(item.decode(value['data']));
+                if data['name']=="pzm" and data['password']=="911D5D1075548073D460B25AFFD3717114069B32B3801784FCC7244973E33EC1":
+                    session['nowUser'] = "pzm";
+                    session['uid'] = data['uid'];
+                    return json.dumps({"type":100});
+                elif data['name']=="lt" and data['password']=="064156ECBDF35B0CFBEA14B91B011856B18154C306EA963CCDBE844F858D89DF":
+                    session['nowUser'] = "lt";
+                    session['uid'] = data['uid'];
+                    return json.dumps({"type":100});
+                elif data['name']=="zjsru" and data['password']=="07F3F7D9B262E80020373EFA95D165E208A2B0D826E2A6E02C52085448BC98B1":
+                    session['nowUser'] = "zjsru";
+                    session['uid'] = data['uid'];
+                    return json.dumps({"type":100});
+                else:
+                    return json.dumps({"type":404});
+
+            elif value['n'] == "isSignOn":
+                try:
+                    if session['nowUser']== "lt" or session["nowUser"] == "pzm" or session["nowUser"]=="zjsru":
+                        return "True";
+                    else:
+                        return "False";
+                except Exception:
+                    return "Error:NOTSIGN";
+                return "Error:NO";
 
         except Exception as e:
             raise e;
